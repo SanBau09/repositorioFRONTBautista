@@ -1,0 +1,79 @@
+<p>form-ilustracion works!</p>
+
+<ul class="alert alert-danger" *ngIf="errores?.length > 0">
+    <li *ngFor="let err of errores">
+        {{ err }}
+    </li>
+</ul>
+
+<div class="card bg-dark text-white">
+    <div class="card-header">{{ titulo }}</div>
+    <div class="card-body">
+        <form #ilustracionForm="ngForm">
+            <div class="form-group row">
+                <label for="nombre" class="col-form-label col-sm-2">Título</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="ilustracion.titulo" name="titulo" #titulo="ngModel"><!-- required minlength="4" -->
+                    <div class="alert alert-danger" *ngIf="titulo.invalid && (titulo.dirty || titulo.touched)">
+                        <div *ngIf="titulo.errors.required">
+                            Título es requerido
+                        </div>
+                        <div *ngIf="titulo.errors.minlength">
+                            El título debe tener al menos 4 letras
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="pais" class="col-form-label col-sm-2">Categoría</label>
+                <div class="col-sm-6">
+                    <select [compareWith]="compararCategoria" class="form-control" [(ngModel)]="categoriaSeleccionada" name="categoria" ><!-- required -->
+                        <option [ngValue]="undefined">--- selecciona una categoría ---</option>
+                        <option *ngFor="let categoria of categorias" [ngValue]="categoria">{{categoria.nombre}}</option>
+                    </select>
+
+                    <button class="btn btn-primary" type="button" id="inputGroupFileAddon04" (click)="mostrarPDialogCategoria()">Crear Categoría</button> 
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group">
+                    <input (change)="seleccionarFoto($event)" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+            
+                    <button class="btn btn-primary" type="button" id="inputGroupFileAddon04" (click)="create()"  [disabled]="!fotoSeleccionada && !ilustracionForm.form.valid">Crear</button>
+                
+                </div>
+
+                <div *ngIf="progreso > 0" class="progress" role="progressbar" aria-label="Info striped example" attr.aria-valuenow="{{progreso}}" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-striped bg-info" [ngStyle]="{width:progreso+ '%'}">
+                    {{progreso}}%
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+
+</div>
+
+<!--Ventana al formulario de crear categoria-->
+<p-dialog [(visible)]="displayActivationDialog" [modal]="true" [closable]="true" [style]="{width: '60vw',height:'60vh'}">
+    <ng-template pTemplate="header">
+        <h3>Crear nueva Categoría</h3>
+    </ng-template>
+    <ng-template pTemplate="content">
+        <!-- Contenido del diálogo aquí -->
+        <div class="form-group">
+            <label for="nombreCategoria">Nombre de la Categoría</label>
+            <input type="text" id="nombreCategoria" class="form-control" [(ngModel)]="nuevaCategoria.nombre" name="nombreCategoria">
+          </div>
+          <div class="form-group">
+            <p-checkbox label="Es Galería" [(ngModel)]="nuevaCategoria.esGaleria" binary="true"></p-checkbox>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-primary" (click)="createCategoria()">Guardar</button>
+          </div>
+    </ng-template>
+</p-dialog>

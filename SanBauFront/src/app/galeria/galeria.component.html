@@ -1,0 +1,92 @@
+
+
+<div class="container">
+  <!--Menú filtrar por categorías-->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <select class="form-control" (change)="filtrarPorCategoria($event.target.value)">
+        <option value="">Todas las Categorías</option>
+        <option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.nombre }}</option>
+      </select>
+    </div>
+  </div>
+
+
+
+  <div class="row">
+    <div class="col-md-4" *ngFor="let ilustracion of ilustracionesFiltradas">
+      <div class="card mb-4 shadow-sm h-100">
+        <img src="http://localhost:8080/api/uploads/img/{{ilustracion.imagen}}" class="card-img-top" alt="{{ilustracion.imagen}}" 
+        style="width:100%; height:100%; object-fit: cover; cursor:pointer;"
+        data-toggle="tooltip" [title]="ilustracion.titulo" data-html="true" data-class="tooltip-custom">
+
+         <!--Solo el Admin puede ver las opciones editar y eliminar ilustraciones-->
+        <div *ngIf="authService.hasRol('ROLE_ADMIN')"  class="card-body">
+          <h5 class="card-title">{{ilustracion.titulo}}</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <button class="btn btn-primary" (click)="mostrarPDialogEditarIlustacion(ilustracion)">Editar</button>
+            <button class="btn btn-danger" (click)="eliminarIlustracion(ilustracion)">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Ventana al formulario de editar ilustracion-->
+<p-dialog [(visible)]="displayActivationDialog" [modal]="true" [closable]="true" [baseZIndex]="1000" [style]="{width: '60vw',height:'80vh'}">
+  <ng-template pTemplate="header">
+      <h3>Editar Ilustración</h3>
+  </ng-template>
+  <ng-template pTemplate="content">
+      <!-- Contenido del diálogo aquí -->
+      <form #ilustracionForm="ngForm">
+        <div class="form-group row">
+            <label for="nombre" class="col-form-label col-sm-2">Título</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" [(ngModel)]="ilustracionAEditar.titulo" name="titulo" #titulo="ngModel"><!-- required minlength="4" -->
+                <div class="alert alert-danger" *ngIf="titulo.invalid && (titulo.dirty || titulo.touched)">
+                    <div *ngIf="titulo.errors.required">
+                        Título es requerido
+                    </div>
+                    <div *ngIf="titulo.errors.minlength">
+                        El título debe tener al menos 4 letras
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="pais" class="col-form-label col-sm-2">Categoría</label>
+            <div class="col-sm-6">
+                <select [compareWith]="compararCategoria" class="form-control" [(ngModel)]="ilustracionAEditar.categorias[0]" name="categoria" ><!-- required -->
+                    <option [ngValue]="undefined">--- selecciona una categoría ---</option>
+                    <option *ngFor="let categoria of categorias" [ngValue]="categoria">{{categoria.nombre}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-sm">
+          <p>Si <b>sólo deseas cambiar la imagen</b>, selecciona el fichero y dale a "Subir Foto"</p>
+            <div class="input-group">
+              <input (change)="seleccionarFoto($event)" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+              <button (click)="subirFoto()" [disabled]="!fotoSeleccionada" class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Subir Foto</button>            
+            </div>
+
+            <div *ngIf="progreso > 0" class="progress" role="progressbar" aria-label="Info striped example" attr.aria-valuenow="{{progreso}}" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar progress-bar-striped bg-info" [ngStyle]="{width:progreso+ '%'}">
+                {{progreso}}%
+                </div>
+            </div>
+
+            <div class="col-sm">
+              <img *ngIf="ilustracionAEditar?.imagen" src="http://localhost:8080/api/uploads/img/{{ilustracionAEditar.imagen}}" alt="{{ilustracionAEditar.imagen}}" class="img-thumbnail rounded" style="width: 50px; height: 50px;">
+          </div>
+        </div>
+      
+        <div class="form-group">
+          <button class="btn btn-primary" (click)="editarIlustracion()">Guardar</button>
+        </div>
+      </form>
+  </ng-template>
+</p-dialog>

@@ -1,0 +1,14 @@
+/* Estilos para tooltips personalizados */
+.tooltip-custom {
+    font-size: 16px; /* Tamaño del texto del tooltip */
+    max-width: 400px; /* Ancho máximo del tooltip */
+    padding: 10px 20px; /* Espaciado interno del tooltip */
+    background-color: #333; /* Color de fondo del tooltip */
+    color: #fff; /* Color del texto del tooltip */
+    border-radius: 8px; /* Radio de borde del tooltip */
+  }
+  
+  /* Estilos para tooltip arrow */
+  .tooltip-custom .arrow::before {
+    border-top-color: #333; /* Color de fondo del tooltip */
+  }

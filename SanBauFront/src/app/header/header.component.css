@@ -1,0 +1,24 @@
+
+.header {
+  background-image: url('/assets/img/header.jpg');
+  height: 20rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center; /*para que fluya hacia el centro cuando se haga mas pequeña la pantalla*/
+}
+
+.navbar-nav {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.nav-item {
+  margin-right: 30px;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
