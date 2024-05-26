@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 export class FormIlustracionComponent implements OnInit{
   public ilustracion: Ilustracion = new Ilustracion();
-  public titulo: string = "Añadir Ilustración";
+
   categorias: Categoria[];
 
   fotoSeleccionada: File;
@@ -73,6 +73,7 @@ export class FormIlustracionComponent implements OnInit{
   }
 
   createCategoria(): void{
+    this.nuevaCategoria.esGaleria = true;
     this.galeriaService.createCategoria(this.nuevaCategoria).subscribe({
       next:
         categoria => {

@@ -29,6 +29,7 @@ import { DialogModule } from 'primeng/dialog';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TiendaComponent } from './tienda/tienda.component';
 import { FormArticuloComponent } from './tienda/form-articulo/form-articulo.component';
+import { TiendaService } from './tienda/tienda.service';
 
 
 
@@ -47,8 +48,10 @@ const ROUTES: Routes = [
   {path: 'galeria/categorias', component: FormIlustracionComponent},
   {path: 'galeria/ilustraciones', component: GaleriaComponent},
   {path: 'galeria/ilustraciones/upload', component: GaleriaComponent},
+
   {path: 'tienda/articulos', component: TiendaComponent},
-  {path: 'tienda/form-articulo', component: FormArticuloComponent}
+  {path: 'tienda/form-articulo', component: FormArticuloComponent},
+  {path: 'tienda/categorias', component: FormArticuloComponent},
 
 
 
@@ -80,7 +83,7 @@ const ROUTES: Routes = [
     DialogModule,
     CheckboxModule
   ],
-  providers: [ClienteService, GaleriaService, {provide: LOCALE_ID, useValue: 'es'}],
+  providers: [ClienteService, GaleriaService, TiendaService, {provide: LOCALE_ID, useValue: 'es'}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

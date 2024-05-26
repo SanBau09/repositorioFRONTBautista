@@ -30,8 +30,8 @@
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
           <!-- Agregar enlace para agregar ilustraciones -->
           <a *ngIf="authService.hasRol('ROLE_ADMIN')" class="dropdown-item" routerLink="/galeria/form-ilustracion">Añadir Ilustración</a>
-          <!-- Agregar enlace para agregar ilustraciones -->
-          <a *ngIf="authService.hasRol('ROLE_ADMIN')" class="dropdown-item" routerLink="/galeria/form-articulo">Añadir Artículo</a>
+          <!-- Agregar enlace para agregar articulos -->
+          <a *ngIf="authService.hasRol('ROLE_ADMIN')" class="dropdown-item" routerLink="/tienda/form-articulo">Añadir Artículo</a>
           <!-- Agregar el botón de logout -->
            <button (click)="logout()" class="dropdown-item" type="submit">Logout</button>
         </div>

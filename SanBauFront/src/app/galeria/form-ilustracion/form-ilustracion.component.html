@@ -1,5 +1,3 @@
-<p>form-ilustracion works!</p>
-
 <ul class="alert alert-danger" *ngIf="errores?.length > 0">
     <li *ngFor="let err of errores">
         {{ err }}
@@ -7,11 +5,11 @@
 </ul>
 
 <div class="card bg-dark text-white">
-    <div class="card-header">{{ titulo }}</div>
+    <div class="card-header">Añadir Ilustración</div>
     <div class="card-body">
         <form #ilustracionForm="ngForm">
             <div class="form-group row">
-                <label for="nombre" class="col-form-label col-sm-2">Título</label>
+                <label for="titulo" class="col-form-label col-sm-2">Título</label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" [(ngModel)]="ilustracion.titulo" name="titulo" #titulo="ngModel"><!-- required minlength="4" -->
                     <div class="alert alert-danger" *ngIf="titulo.invalid && (titulo.dirty || titulo.touched)">
@@ -26,13 +24,14 @@
             </div>
 
             <div class="form-group row">
-                <label for="pais" class="col-form-label col-sm-2">Categoría</label>
-                <div class="col-sm-6">
+                <label for="categoria" class="col-form-label col-sm-2">Categoría</label>
+                <div class="col-sm-8">
                     <select [compareWith]="compararCategoria" class="form-control" [(ngModel)]="categoriaSeleccionada" name="categoria" ><!-- required -->
                         <option [ngValue]="undefined">--- selecciona una categoría ---</option>
                         <option *ngFor="let categoria of categorias" [ngValue]="categoria">{{categoria.nombre}}</option>
                     </select>
-
+                </div>
+                <div class="col-sm-2">
                     <button class="btn btn-primary" type="button" id="inputGroupFileAddon04" (click)="mostrarPDialogCategoria()">Crear Categoría</button> 
                 </div>
             </div>
@@ -59,7 +58,7 @@
 </div>
 
 <!--Ventana al formulario de crear categoria-->
-<p-dialog [(visible)]="displayActivationDialog" [modal]="true" [closable]="true" [style]="{width: '60vw',height:'60vh'}">
+<p-dialog [(visible)]="displayActivationDialog" [modal]="true" [closable]="true" [style]="{width: '60vw',height:'40vh'}">
     <ng-template pTemplate="header">
         <h3>Crear nueva Categoría</h3>
     </ng-template>
@@ -69,9 +68,7 @@
             <label for="nombreCategoria">Nombre de la Categoría</label>
             <input type="text" id="nombreCategoria" class="form-control" [(ngModel)]="nuevaCategoria.nombre" name="nombreCategoria">
           </div>
-          <div class="form-group">
-            <p-checkbox label="Es Galería" [(ngModel)]="nuevaCategoria.esGaleria" binary="true"></p-checkbox>
-          </div>
+          
           <div class="form-group">
             <button class="btn btn-primary" (click)="createCategoria()">Guardar</button>
           </div>

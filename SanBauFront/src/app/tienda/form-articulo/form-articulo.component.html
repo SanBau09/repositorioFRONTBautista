@@ -1,1 +1,104 @@
-<p>form-articulo works!</p>
+<ul class="alert alert-danger" *ngIf="errores?.length > 0">
+    <li *ngFor="let err of errores">
+        {{ err }}
+    </li>
+</ul>
+
+
+<div class="card bg-dark text-white">
+    <div class="card-header">Añadir Artículo</div>
+    <div class="card-body">
+        <form #articuloForm="ngForm">
+
+            <div class="form-group row">
+                <label for="titulo" class="col-form-label col-sm-2">Título</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="articulo.titulo" name="titulo" #titulo="ngModel">
+                    <div class="alert alert-danger" *ngIf="titulo.invalid && (titulo.dirty || titulo.touched)">
+                        <div *ngIf="titulo.errors.required">
+                            Título es requerido
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="descripcion" class="col-form-label col-sm-2">Descripción</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="articulo.descripcion" name="descripcion" #descripcion="ngModel">
+                    <div class="alert alert-danger" *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
+                        <div *ngIf="descripcion.errors.required">
+                            Descripción es requerido
+                        </div>
+                        <div *ngIf="descripcion.errors.minlength">
+                            La descripción debe tener entre 10 y 200 caracteres
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="precio" class="col-form-label col-sm-2">Precio</label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control" [(ngModel)]="articulo.precio" name="precio" #precio="ngModel" required min="0.01">
+                    <div class="alert alert-danger" *ngIf="precio.invalid && (precio.dirty || precio.touched)">
+                        <div *ngIf="precio.errors.required">
+                            Precio es requerido
+                        </div>
+                        <div *ngIf="precio.errors.min">
+                            El precio debe ser mayor que 0
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="categoria" class="col-form-label col-sm-2">Categoría</label>
+                <div class="col-sm-8">
+                    <select [compareWith]="compararCategoria" class="form-control" [(ngModel)]="categoriaSeleccionada" name="categoria" ><!-- required -->
+                        <option [ngValue]="undefined">--- selecciona una categoría ---</option>
+                        <option *ngFor="let categoria of categorias" [ngValue]="categoria">{{categoria.nombre}}</option>
+                    </select>
+
+                    
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" type="button" id="inputGroupFileAddon04" (click)="mostrarPDialogCategoria()">Crear Categoría</button> 
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div class="input-group">
+                    <input (change)="seleccionarFoto($event)" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+            
+                    <button class="btn btn-primary" type="button" id="inputGroupFileAddon04" (click)="create()"  [disabled]="!fotoSeleccionada && !articuloForm.form.valid">Crear</button>
+                
+                </div>
+
+                <div *ngIf="progreso > 0" class="progress" role="progressbar" aria-label="Info striped example" attr.aria-valuenow="{{progreso}}" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-striped bg-info" [ngStyle]="{width:progreso+ '%'}">
+                    {{progreso}}%
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!--Ventana al formulario de crear categoria-->
+<p-dialog [(visible)]="displayActivationDialog" [modal]="true" [closable]="true" [style]="{width: '60vw',height:'40vh'}">
+    <ng-template pTemplate="header">
+        <h3>Crear nueva Categoría</h3>
+    </ng-template>
+    <ng-template pTemplate="content">
+        <!-- Contenido del diálogo aquí -->
+        <div class="form-group">
+            <label for="nombreCategoria">Nombre de la Categoría</label>
+            <input type="text" id="nombreCategoria" class="form-control" [(ngModel)]="nuevaCategoria.nombre" name="nombreCategoria">
+          </div>
+          <div class="form-group">
+            <button class="btn btn-primary" (click)="createCategoria()">Guardar</button>
+          </div>
+    </ng-template>
+</p-dialog>
