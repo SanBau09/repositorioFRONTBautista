@@ -63,7 +63,7 @@
                     
                 </div>
                 <div class="col-sm-2">
-                    <button class="btn btn-primary" type="button" id="inputGroupFileAddon04" (click)="mostrarPDialogCategoria()">Crear Categoría</button> 
+                    <button class="btn btn-crear" type="button" id="inputGroupFileAddon04" (click)="mostrarPDialogCategoria()">Crear Categoría</button> 
                 </div>
             </div>
 
@@ -71,7 +71,7 @@
                 <div class="input-group">
                     <input (change)="seleccionarFoto($event)" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
             
-                    <button class="btn btn-primary" type="button" id="inputGroupFileAddon04" (click)="create()"  [disabled]="!fotoSeleccionada && !articuloForm.form.valid">Crear</button>
+                    <button class="btn btn-crear" type="button" id="inputGroupFileAddon04" (click)="create()"  [disabled]="!fotoSeleccionada && !articuloForm.form.valid">Crear</button>
                 
                 </div>
 
@@ -98,7 +98,7 @@
             <input type="text" id="nombreCategoria" class="form-control" [(ngModel)]="nuevaCategoria.nombre" name="nombreCategoria">
           </div>
           <div class="form-group">
-            <button class="btn btn-primary" (click)="createCategoria()">Guardar</button>
+            <button class="btn btn-crear" (click)="createCategoria()">Guardar</button>
           </div>
     </ng-template>
 </p-dialog>

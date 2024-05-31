@@ -4,7 +4,7 @@ import { AuthService } from '../usuarios/auth.service';
 import { Router } from '@angular/router';
 import swal from 'sweetalert2';
 import { Articulo } from './articulo';
-import { Observable, catchError, map, throwError } from 'rxjs';
+import { Observable, catchError, map, tap, throwError } from 'rxjs';
 import { Categoria } from '../galeria/categoria';
 
 
@@ -73,6 +73,32 @@ export class TiendaService {
         swal(e.error.mensaje, e.error.error, 'error');
         return throwError(()=>e);
       })
+    );
+  }
+
+  eliminarArticulo(id: number): Observable<Articulo>{
+    return this.http.delete<Articulo>(` ${this.urlEndPoint}/articulos/${id}`, {headers: this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=> {
+
+        if(this.isNoAutorizado(e)){
+          return throwError(()=>e);
+        }
+
+        console.error(e.error.mensaje);
+        swal('Error al eliminar', e.error.mensaje, 'error');
+        return throwError(()=>e);
+      })
+    )
+  }
+
+  getArticulos(): Observable<any>{
+    return this.http.get(this.urlEndPoint + "/articulos").pipe(
+      tap( (response : any) =>{
+        console.log('TiendaService: tap1');
+        (response as Articulo[]).forEach( Articulo => {
+          console.log(Articulo.id);
+        })
+      }),
     );
   }
 

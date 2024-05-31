@@ -2,10 +2,69 @@
 @import "primeng/resources/themes/lara-light-blue/theme.css";
 @import "primeng/resources/primeng.css";
 
+
+:root{
+    --primario: #325568;
+    --primarioOscuro: #274456;
+    --secundario: #e06464;
+    --secundarioOscuro: #dd4544;
+    --naranja: #eab764;
+    --naranjaOscuro: #eaa73c;
+    --azulClaro: #79cbc0;
+    --azulOscuro: #6dbfb6;
+
+    
+    --blanco: #FFF;
+    --negro: #000;
+
+    --fuentePrincipal: 'Bebas Neue', sans-serif;
+}
+
 .p-dialog{
     z-index: 1100 !important; /* Ajusta el z-index del contenido del p-dialog */
 }
 
 .swal2-container {
     z-index: 2200 !important; /* Asegura que SweetAlert2 tenga un z-index alto */
+}
+
+h1,h2,h3{
+    text-align: center;
+    color: var(--secundario);
+    font-family: var(--fuentePrincipal);
+}
+
+.btn-editar{
+background-color: var(--azulClaro);
+color: var(--blanco);
+}
+
+.btn-editar:hover {
+    background-color: var(--azulOscuro);
+    color: var(--blanco);
+}
+
+.btn-eliminar{
+    background-color: var(--secundario);
+    color: var(--blanco);
+}
+
+.btn-eliminar:hover{
+    background-color: var(--secundarioOscuro);
+    color: var(--blanco);
+}
+
+.btn-crear{
+    background-color: var(--naranja);
+    color: var(--blanco);
+}
+
+.btn-crear:hover{
+    background-color: var(--naranjaOscuro);
+    color: var(--blanco);
+}
+
+.card-body {
+    background-color: var(--primarioOscuro);
+    color: var(--blanco);
 }

@@ -95,6 +95,8 @@ export class GaleriaComponent implements OnInit{
               'Ilustración Eliminada!',
               `Ilustración ${ilustracion.titulo} eliminada con éxito`,
               'success');
+
+              this.obtenerIlustraciones();
             });
           }
     });

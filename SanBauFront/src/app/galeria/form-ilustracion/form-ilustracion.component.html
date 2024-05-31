@@ -11,7 +11,7 @@
             <div class="form-group row">
                 <label for="titulo" class="col-form-label col-sm-2">Título</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="ilustracion.titulo" name="titulo" #titulo="ngModel"><!-- required minlength="4" -->
+                    <input type="text" class="form-control" [(ngModel)]="ilustracion.titulo" name="titulo" #titulo="ngModel" required minlength="4" >
                     <div class="alert alert-danger" *ngIf="titulo.invalid && (titulo.dirty || titulo.touched)">
                         <div *ngIf="titulo.errors.required">
                             Título es requerido
@@ -32,7 +32,7 @@
                     </select>
                 </div>
                 <div class="col-sm-2">
-                    <button class="btn btn-primary" type="button" id="inputGroupFileAddon04" (click)="mostrarPDialogCategoria()">Crear Categoría</button> 
+                    <button class="btn btn-crear" type="button" id="inputGroupFileAddon04" (click)="mostrarPDialogCategoria()">Crear Categoría</button> 
                 </div>
             </div>
 
@@ -40,7 +40,7 @@
                 <div class="input-group">
                     <input (change)="seleccionarFoto($event)" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
             
-                    <button class="btn btn-primary" type="button" id="inputGroupFileAddon04" (click)="create()"  [disabled]="!fotoSeleccionada && !ilustracionForm.form.valid">Crear</button>
+                    <button class="btn btn-crear" type="button" id="inputGroupFileAddon04" (click)="create()"  [disabled]="!fotoSeleccionada && !ilustracionForm.form.valid">Crear</button>
                 
                 </div>
 
@@ -70,7 +70,7 @@
           </div>
           
           <div class="form-group">
-            <button class="btn btn-primary" (click)="createCategoria()">Guardar</button>
+            <button class="btn btn-crear" (click)="createCategoria()">Guardar</button>
           </div>
     </ng-template>
 </p-dialog>
