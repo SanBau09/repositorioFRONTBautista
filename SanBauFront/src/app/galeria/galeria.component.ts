@@ -153,6 +153,7 @@ export class GaleriaComponent implements OnInit{
   mostrarPDialogEditarIlustacion(ilustracion): void{
     this.displayActivationDialog = true; // Mostrar el diálogo
     this.ilustracionAEditar = ilustracion;
+    this.progreso = 0;
   }
   
 

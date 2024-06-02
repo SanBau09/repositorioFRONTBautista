@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../usuarios/auth.service';
 import { Router } from '@angular/router';
@@ -74,6 +74,51 @@ export class TiendaService {
         return throwError(()=>e);
       })
     );
+  }
+
+  editarArticulo(articulo: Articulo): Observable<any>{
+    return this.http.put<any>(` ${this.urlEndPoint}/articulos/${articulo.id}`, articulo, {headers: this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=> {
+
+        if(this.isNoAutorizado(e)){
+          return throwError(()=>e);
+        }
+        if(e.status==400){
+          return throwError(()=>e);
+        }
+
+        console.error(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(()=>e);
+      })
+    )
+  }
+
+  subirFoto(archivo: File, id): Observable<HttpEvent<{}>>{
+    let formData = new FormData();
+    formData.append("archivo", archivo);
+    formData.append("id", id);
+
+    let httpHeaders = new HttpHeaders();
+    let token = this.authService.token;
+
+    if(token != null){
+      httpHeaders = httpHeaders.append('Authorization', 'Bearer' + token);
+    }
+
+    const req = new HttpRequest('POST', `${this.urlEndPoint}/articulos/upload`, formData, {
+      reportProgress: true,
+      headers: httpHeaders
+    });
+
+    return this.http.request(req).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+
+        return throwError(()=>e);
+      })
+    );  //retorna un httpRquest con el progreso
+     
   }
 
   eliminarArticulo(id: number): Observable<Articulo>{

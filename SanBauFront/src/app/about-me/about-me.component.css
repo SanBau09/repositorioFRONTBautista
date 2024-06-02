@@ -11,8 +11,8 @@
     align-items: center; /* Centra verticalmente los elementos */
   }
   
-  .content img {
+  .perfil {
     width: 370px; /* Ancho deseado */
     height: 500px; /* Alto deseado */
-    margin-right: 20px; /* Espacio entre la imagen y el texto */
+    margin-left: 100px; /* Espacio entre la imagen y el texto */
   }

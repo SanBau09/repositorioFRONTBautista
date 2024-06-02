@@ -52,6 +52,7 @@ const ROUTES: Routes = [
   {path: 'tienda/articulos', component: TiendaComponent},
   {path: 'tienda/form-articulo', component: FormArticuloComponent},
   {path: 'tienda/categorias', component: FormArticuloComponent},
+  {path: 'tienda/articulos/upload', component: TiendaComponent}
 
 
 

@@ -1,5 +1,135 @@
 <div class="container">
-    <!--Menú filtrar por categorías-->
+  <!--Menú filtrar por categorías-->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <select class="form-control" (change)="filtrarPorCategoria($event.target.value)">
+        <option value="">Todas las Categorías</option>
+        <option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.nombre }}</option>
+      </select>
+    </div>
+  </div>
+
+<div class="row">
+<div class="col-md-4 mb-4" *ngFor="let articulo of articulosFiltrados">
+  <div class="card mb-4 shadow-sm h-100 text-center border-secondary">
+    <img src="http://localhost:8080/api/uploads/img/{{articulo.imagen}}" class="card-img-top" alt="{{articulo.imagen}}" 
+    style="width:100%; height:100%; object-fit: cover; cursor:pointer;"
+    data-toggle="tooltip" [title]="articulo.titulo" data-html="true" data-class="tooltip-custom">
+
+      <!--Solo el Admin puede ver las opciones editar y eliminar articulos-->
+    <div *ngIf="authService.hasRol('ROLE_ADMIN')"  class="card-body">
+      <h5 class="card-title">{{articulo.titulo}}</h5>
+      <div>
+        <button class="btn btn-editar mr-3" (click)="mostrarPDialogEditarArticulo(articulo)"><i class="fas fa-pen"></i></button>
+        <button class="btn btn-eliminar" (click)="eliminarArticulo(articulo)"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!--Ventana al formulario de editar articulo-->
+<p-dialog [(visible)]="displayActivationDialog" [modal]="true" [closable]="true" [baseZIndex]="1000" [style]="{width: '70vw',height:'80vh'}">
+<ng-template pTemplate="header">
+    <h3>Editar Artículo</h3>
+</ng-template>
+<ng-template pTemplate="content">
+    <!-- Contenido del diálogo aquí -->
+      <form #articuloForm="ngForm">
+          <div class="row">
+            <!-- Columna Izquierda: Inputs -->
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label for="titulo" class="col-form-label col-sm-4">Título</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" [(ngModel)]="articuloAEditar.titulo" name="titulo" #titulo="ngModel" required>
+                        <div class="alert alert-danger" *ngIf="titulo.invalid && (titulo.dirty || titulo.touched)">
+                            <div *ngIf="titulo.errors.required">
+                                Título es requerido
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="descripcion" class="col-form-label col-sm-4">Descripción</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" [(ngModel)]="articuloAEditar.descripcion" name="descripcion" #descripcion="ngModel" required minlength="10" maxlength="200">
+                        <div class="alert alert-danger" *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
+                            <div *ngIf="descripcion.errors.required">
+                                Descripción es requerida
+                            </div>
+                            <div *ngIf="descripcion.errors.minlength">
+                                La descripción debe tener al menos 10 letras
+                            </div>
+                            <div *ngIf="descripcion.errors.maxlength">
+                                La descripción debe tener como máximo 200 letras
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="precio" class="col-form-label col-sm-4">Precio</label>
+                    <div class="col-sm-8">
+                        <input type="number" class="form-control" [(ngModel)]="articuloAEditar.precio" name="precio" #precio="ngModel" min="0.01">
+                        <div class="alert alert-danger" *ngIf="precio.invalid && (precio.dirty || precio.touched)">
+                            <div *ngIf="precio.errors.required">
+                                Precio es requerido
+                            </div>
+                            <div *ngIf="precio.errors.min">
+                                El precio debe ser mayor que 0
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="categoria" class="col-form-label col-sm-4">Categoría</label>
+                    <div class="col-sm-8">
+                        <select [compareWith]="compararCategoria" class="form-control" [(ngModel)]="articuloAEditar.categorias[0]" name="categoria">
+                            <option [ngValue]="undefined">--- selecciona una categoría ---</option>
+                            <option *ngFor="let categoria of categorias" [ngValue]="categoria">{{categoria.nombre}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Imagen -->
+            <div class="col-md-6 text-center">
+                <img *ngIf="articuloAEditar?.imagen" src="http://localhost:8080/api/uploads/img/{{articuloAEditar.imagen}}" alt="{{articuloAEditar.imagen}}" class="img-thumbnail rounded" style="width: 150px; height: 150px;">
+            </div>
+        </div>
+
+        <!-- Fila para subir foto -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <p>Si <b>sólo deseas cambiar la imagen</b>, selecciona el fichero y dale a "Subir Foto"</p>
+                <div class="input-group">
+                    <input (change)="seleccionarFoto($event)" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                    <button (click)="subirFoto()" [disabled]="!fotoSeleccionada" class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Subir Foto</button>
+                </div>
+
+                <div *ngIf="progreso > 0" class="progress mt-2" role="progressbar" aria-label="Info striped example" attr.aria-valuenow="{{progreso}}" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-striped bg-info" [ngStyle]="{width:progreso+ '%'}">
+                        {{progreso}}%
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón de Guardar -->
+        <div class="form-group mt-3 text-center">
+            <button class="btn btn-primary" (click)="editarArticulo()">Guardar</button>
+        </div>
+      </form>
+    
+</ng-template>
+</p-dialog>
+
+<!--
+<div class="container">
+    Menú filtrar por categorías
     <div class="row mb-4">
       <div class="col-md-4">
         <select class="form-control" (change)="filtrarPorCategoria($event.target.value)">
@@ -10,21 +140,108 @@
     </div>
 
 <div class="row">
-    <div class="col-md-4 mb-4" *ngFor="let articulo of articulosFiltrados">
-      <div class="card mb-4 shadow-sm h-100 text-center border-secondary">
-        <img src="http://localhost:8080/api/uploads/img/{{articulo.imagen}}" class="card-img-top" alt="{{articulo.imagen}}" 
-        style="width:100%; height:100%; object-fit: cover; cursor:pointer;"
-        data-toggle="tooltip" [title]="articulo.titulo" data-html="true" data-class="tooltip-custom">
+  <div class="col-md-4 mb-4" *ngFor="let articulo of articulosFiltrados">
+    <div class="card mb-4 shadow-sm h-100 text-center border-secondary">
+      <img src="http://localhost:8080/api/uploads/img/{{articulo.imagen}}" class="card-img-top" alt="{{articulo.imagen}}" 
+      style="width:100%; height:100%; object-fit: cover; cursor:pointer;"
+      data-toggle="tooltip" [title]="articulo.titulo" data-html="true" data-class="tooltip-custom">
 
-         <!--Solo el Admin puede ver las opciones editar y eliminar articulos-->
-        <div *ngIf="authService.hasRol('ROLE_ADMIN')"  class="card-body">
-          <h5 class="card-title">{{articulo.titulo}}</h5>
-          <div>
-            <button class="btn btn-editar mr-3" (click)="mostrarPDialogEditarArticulo(articulo)"><i class="fas fa-pen"></i></button>
-            <button class="btn btn-eliminar" (click)="eliminarArticulo(articulo)"><i class="fas fa-trash"></i></button>
-          </div>
+        Solo el Admin puede ver las opciones editar y eliminar articulos
+      <div *ngIf="authService.hasRol('ROLE_ADMIN')"  class="card-body">
+        <h5 class="card-title">{{articulo.titulo}}</h5>
+        <div>
+          <button class="btn btn-editar mr-3" (click)="mostrarPDialogEditarArticulo(articulo)"><i class="fas fa-pen"></i></button>
+          <button class="btn btn-eliminar" (click)="eliminarArticulo(articulo)"><i class="fas fa-trash"></i></button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+Ventana al formulario de editar articulo
+<p-dialog [(visible)]="displayActivationDialog" [modal]="true" [closable]="true" [baseZIndex]="1000" [style]="{width: '60vw',height:'80vh'}">
+  <ng-template pTemplate="header">
+      <h3>Editar Artículo</h3>
+  </ng-template>
+  <ng-template pTemplate="content">
+       Contenido del diálogo aquí 
+      <form #articuloForm="ngForm">
+        <div class="form-group row">
+            <label for="titulo" class="col-form-label col-sm-2">Título</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" [(ngModel)]="articuloAEditar.titulo" name="titulo" #titulo="ngModel" required>
+                <div class="alert alert-danger" *ngIf="titulo.invalid && (titulo.dirty || titulo.touched)">
+                    <div *ngIf="titulo.errors.required">
+                        Título es requerido
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="descripcion" class="col-form-label col-sm-2">Descripción</label>
+          <div class="col-sm-6">
+              <input type="text" class="form-control" [(ngModel)]="articuloAEditar.descripcion" name="descripcion" #descripcion="ngModel" required minlength="10" maxlength="200">
+              <div class="alert alert-danger" *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
+                  <div *ngIf="descripcion.errors.required">
+                    Descripción es requerida
+                  </div>
+                  <div *ngIf="titulo.errors.minlength">
+                      La descripción debe tener al menos 10 letras
+                  </div>
+                  <div *ngIf="titulo.errors.maxlength">
+                    La descripción debe tener como máximo 200 letras
+                  </div>
+              </div>
+          </div>
+        </div>
+      
+        <div class="form-group row">
+          <label for="precio" class="col-form-label col-sm-2">Precio</label>
+          <div class="col-sm-6">
+              <input type="number" class="form-control" [(ngModel)]="articuloAEditar.precio" name="precio" #precio="ngModel" min="0.01">
+              <div class="alert alert-danger" *ngIf="precio.invalid && (precio.dirty || precio.touched)">
+                  <div *ngIf="precio.errors.required">
+                    Precio es requerido
+                  </div>
+                  <div *ngIf="precio.errors.min">
+                    El precio debe ser mayor que 0
+                  </div>
+              </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="pais" class="col-form-label col-sm-2">Categoría</label>
+            <div class="col-sm-6">
+                <select [compareWith]="compararCategoria" class="form-control" [(ngModel)]="articuloAEditar.categorias[0]" name="categoria" >
+                    <option [ngValue]="undefined">--- selecciona una categoría ---</option>
+                    <option *ngFor="let categoria of categorias" [ngValue]="categoria">{{categoria.nombre}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-sm">
+          <p>Si <b>sólo deseas cambiar la imagen</b>, selecciona el fichero y dale a "Subir Foto"</p>
+            <div class="input-group">
+              <input (change)="seleccionarFoto($event)" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+              <button (click)="subirFoto()" [disabled]="!fotoSeleccionada" class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Subir Foto</button>            
+            </div>
+
+            <div *ngIf="progreso > 0" class="progress" role="progressbar" aria-label="Info striped example" attr.aria-valuenow="{{progreso}}" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar progress-bar-striped bg-info" [ngStyle]="{width:progreso+ '%'}">
+                {{progreso}}%
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+              <img *ngIf="articuloAEditar?.imagen" src="http://localhost:8080/api/uploads/img/{{articuloAEditar.imagen}}" alt="{{articuloAEditar.imagen}}" class="img-thumbnail rounded" style="width: 50px; height: 50px;">
+          </div>
+        </div>
+      
+        <div class="form-group">
+          <button class="btn btn-primary" (click)="editarArticulo()">Guardar</button>
+        </div>
+      </form>
+  </ng-template>
+</p-dialog>-->

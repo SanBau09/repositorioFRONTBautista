@@ -1,6 +1,21 @@
 .footer{
     position: relative;
     bottom: 0px;
-    height: 60px;
+    height: 65px;
     width: 100%;
+}
+
+a{
+    color: white; /* Hereda el color de texto del padre (en este caso, blanco) */
+    text-decoration: none; /* Quita el subrayado */
+    margin: 0 10px;
+}
+
+a:hover {
+    color: white; /* Mantiene el color de texto al pasar el ratón por encima */
+    text-decoration: none; /* Mantiene el subrayado quitado */
+}
+
+i{
+    font-size: 23px; /* Tamaño de los iconos */
 }

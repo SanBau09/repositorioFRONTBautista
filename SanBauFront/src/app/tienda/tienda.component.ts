@@ -5,6 +5,7 @@ import { Articulo } from './articulo';
 import { Categoria } from '../galeria/categoria';
 import { GaleriaService } from '../galeria/galeria.service';
 import swal from 'sweetalert2';
+import { HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-tienda',
@@ -17,7 +18,9 @@ export class TiendaComponent implements OnInit {
   articuloAEditar: Articulo;
   categorias: Categoria[];
 
-  displayActivationDialog: boolean = false;     // Variable para controlar la visibilidad del diálogo de editar ilustración
+  displayActivationDialog: boolean = false;     // Variable para controlar la visibilidad del diálogo de editar articulo
+  fotoSeleccionada: File;
+  progreso:number = 0;
 
   public errores: string[];
 
@@ -33,7 +36,7 @@ export class TiendaComponent implements OnInit {
     this.tiendaService.getArticulos().subscribe(
       (articulos: Articulo[]) => {
         this.articulos = articulos;
-        this.articulosFiltrados = articulos; // Inicialmente mostrar todas
+        this.articulosFiltrados = articulos; // Inicialmente mostrar todos
       },
       error => {
         console.error('Error al obtener articulos:', error);
@@ -68,9 +71,57 @@ export class TiendaComponent implements OnInit {
     }
   }
 
+  editarArticulo(): void{
+    this.tiendaService.editarArticulo(this.articuloAEditar).subscribe({
+      next:
+          json => {
+            this.displayActivationDialog = false;
+            this.obtenerArticulos(); // Refrescar la lista de articulos
+            swal('Articulo Actualizado', `${json.mensaje}: ${json.articulo.titulo}`, 'success')},
+            
+          error:
+            err => {
+              this.errores = err.error.errors as string[];
+              console.error('Código del error desde el backend: ' + err.status);}
+    });
+  }
+
+  seleccionarFoto(event){  //nos aseguramos que el archivo sea de tipo imagen
+    this.fotoSeleccionada = event.target.files[0];
+    this.progreso = 0;
+
+    console.log(this.fotoSeleccionada);
+
+    if(this.fotoSeleccionada.type.indexOf('image') < 0){
+      swal('Error Seleccionar imagen: ', 'El archivo debe ser de tipo imagen', 'error');
+      this.fotoSeleccionada = null;
+    }
+  }
+
+  subirFoto(){ //nos aseguramos que el archivo sea de tipo imagen
+    if(!this.fotoSeleccionada){
+      swal('Error Upload: ', 'Debe seleccionar una foto', 'error');
+    }else{
+      this.tiendaService.subirFoto(this.fotoSeleccionada, this.articuloAEditar.id)
+      .subscribe(event =>{
+        if(event.type === HttpEventType.UploadProgress){
+          this.progreso = Math.round((event.loaded/event.total)*100);
+        }else if(event.type === HttpEventType.Response){
+          let response:any = event.body;
+          this.articuloAEditar = response.articulo as Articulo;
+          swal('La foto se ha subido correctamente!', response.mensaje, 'success');
+
+          this.obtenerArticulos(); // Refrescar la lista de articulos
+          
+        }
+      });
+    }
+  }
+
   mostrarPDialogEditarArticulo(articulo): void{
     this.displayActivationDialog = true; // Mostrar el diálogo
     this.articuloAEditar = articulo;
+    this.progreso = 0;
   }
 
   eliminarArticulo(articulo: Articulo) : void {

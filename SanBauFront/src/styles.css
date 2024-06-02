@@ -28,9 +28,10 @@
     z-index: 2200 !important; /* Asegura que SweetAlert2 tenga un z-index alto */
 }
 
-h1,h2,h3{
+
+.title{
+    color: var(--secundarioOscuro);
     text-align: center;
-    color: var(--secundario);
     font-family: var(--fuentePrincipal);
 }
 
@@ -63,6 +64,16 @@ color: var(--blanco);
     background-color: var(--naranjaOscuro);
     color: var(--blanco);
 }
+
+.btn-login{
+    background-color: var(--azulClaro);
+    color: var(--blanco);
+    }
+    
+    .btn-login:hover {
+        background-color: var(--azulOscuro);
+        color: var(--blanco);
+    }
 
 .card-body {
     background-color: var(--primarioOscuro);
