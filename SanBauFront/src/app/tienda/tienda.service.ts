@@ -37,7 +37,7 @@ export class TiendaService {
     }
     if(e.status == 403){
       swal('Acceso denegado', 'no tienes permisos', 'warning');
-      this.router.navigate(['/clientes']);
+      this.router.navigate(['/tienda']);
 
       return true;
     }

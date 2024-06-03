@@ -11,6 +11,7 @@ import { DetalleComponent } from './clientes/detalle/detalle.component';
 
 import { ClienteService } from './clientes/cliente.service';
 import { GaleriaService } from './galeria/galeria.service';
+import { UsuariosService } from './usuarios/usuarios.service';
 
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -30,6 +31,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { TiendaComponent } from './tienda/tienda.component';
 import { FormArticuloComponent } from './tienda/form-articulo/form-articulo.component';
 import { TiendaService } from './tienda/tienda.service';
+import { FormRegistroComponent } from './usuarios/form-registro/form-registro.component';
 
 
 
@@ -52,7 +54,9 @@ const ROUTES: Routes = [
   {path: 'tienda/articulos', component: TiendaComponent},
   {path: 'tienda/form-articulo', component: FormArticuloComponent},
   {path: 'tienda/categorias', component: FormArticuloComponent},
-  {path: 'tienda/articulos/upload', component: TiendaComponent}
+  {path: 'tienda/articulos/upload', component: TiendaComponent},
+
+  {path: 'usuarios/form-registro', component: FormRegistroComponent}
 
 
 
@@ -73,7 +77,8 @@ const ROUTES: Routes = [
     GaleriaComponent,
     FormIlustracionComponent,
     TiendaComponent,
-    FormArticuloComponent
+    FormArticuloComponent,
+    FormRegistroComponent
   ],
   imports: [
     BrowserModule,
@@ -84,7 +89,7 @@ const ROUTES: Routes = [
     DialogModule,
     CheckboxModule
   ],
-  providers: [ClienteService, GaleriaService, TiendaService, {provide: LOCALE_ID, useValue: 'es'}],
+  providers: [ClienteService, GaleriaService, TiendaService, UsuariosService, {provide: LOCALE_ID, useValue: 'es'}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
