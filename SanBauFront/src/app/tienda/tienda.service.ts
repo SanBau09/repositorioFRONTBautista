@@ -6,6 +6,7 @@ import swal from 'sweetalert2';
 import { Articulo } from './articulo';
 import { Observable, catchError, map, tap, throwError } from 'rxjs';
 import { Categoria } from '../galeria/categoria';
+import { Formato } from './formato';
 
 
 @Injectable({
@@ -144,6 +145,40 @@ export class TiendaService {
           console.log(Articulo.id);
         })
       }),
+    );
+  }
+
+  getFormatosPorArticulo(articuloId){
+
+  }
+
+  crearFormato(formato: Formato): Observable<Formato>{
+    return this.http.post(this.urlEndPoint + "/formatos", formato, {headers:this.agregarAuthorizationHeader()}).pipe(
+      map( (response : any) => response.formato as Formato),
+      catchError(e=> {
+
+        if(this.isNoAutorizado(e)){
+          return throwError(()=>e);
+        }
+
+        if(e.status==400){
+          return throwError(()=>e);
+        }
+
+        console.error(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(()=>e);
+      })
+    );
+  }
+
+  getFormatos(): Observable<Formato[]>{
+    return this.http.get<Formato[]>(this.urlEndPoint + '/formatos', {headers: this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        //this.isNoAutorizado(e);
+
+        return throwError(()=>e);
+      })
     );
   }
 

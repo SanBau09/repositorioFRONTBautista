@@ -73,18 +73,22 @@ export class FormIlustracionComponent implements OnInit{
   }
 
   createCategoria(): void{
-    this.nuevaCategoria.esGaleria = true;
-    this.galeriaService.createCategoria(this.nuevaCategoria).subscribe({
-      next:
-        categoria => {
-          this.displayActivationDialog = false;
-          this.galeriaService.getCategorias().subscribe(categorias => this.categorias = categorias.filter(categoria => categoria.esGaleria));  // Filtrar categorías);
-          swal('Nueva categoría', `La categoría ${categoria.nombre} ha sido creada con éxito`, 'success');},
-        error:
-          err => {
-            this.errores = err.error.errors as string[];
-            console.error('Código del error desde el backend: ' + err.status);}
-    });
+    if(this.categorias.find(x => x.nombre.toLocaleLowerCase() == this.nuevaCategoria.nombre.toLocaleLowerCase())){
+      swal('Categoria Existente', `La categoría ${this.nuevaCategoria.nombre} ya existe!`, 'error');
+    } else{
+      this.nuevaCategoria.esGaleria = true;
+      this.galeriaService.createCategoria(this.nuevaCategoria).subscribe({
+        next:
+          categoria => {
+            this.displayActivationDialog = false;
+            this.galeriaService.getCategorias().subscribe(categorias => this.categorias = categorias.filter(categoria => categoria.esGaleria));  // Filtrar categorías);
+            swal('Nueva categoría', `La categoría ${categoria.nombre} ha sido creada con éxito`, 'success');},
+          error:
+            err => {
+              this.errores = err.error.errors as string[];
+              console.error('Código del error desde el backend: ' + err.status);}
+      });
+    }
   }
 
   mostrarPDialogCategoria(): void{

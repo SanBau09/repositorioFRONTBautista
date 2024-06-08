@@ -5,6 +5,7 @@ import { Articulo } from '../articulo';
 import swal from 'sweetalert2';
 import { Categoria } from 'src/app/galeria/categoria';
 import { GaleriaService } from 'src/app/galeria/galeria.service';
+import { Formato } from '../formato';
 
 @Component({
   selector: 'app-form-articulo',
@@ -13,15 +14,19 @@ import { GaleriaService } from 'src/app/galeria/galeria.service';
 })
 export class FormArticuloComponent implements OnInit{
   public articulo: Articulo = new Articulo();
+  public formatos: Formato[] = [];
 
   public errores: string[];
 
   fotoSeleccionada: File;
   categoriaSeleccionada: Categoria;
+  formatoSeleccionados: Formato[];
   categorias: Categoria[];
 
   displayActivationDialog: boolean = false;     // Variable para controlar la visibilidad del diálogo de crear categoría
   nuevaCategoria: Categoria = null;
+  nuevoFormato: Formato = new Formato(); // Nuevo formato a crear
+  
 
   progreso:number = 0;
 
@@ -29,6 +34,15 @@ export class FormArticuloComponent implements OnInit{
 
   ngOnInit(){
     this.galeriaService.getCategorias().subscribe(categorias => this.categorias = categorias.filter(categoria => !categoria.esGaleria));  // Filtrar categorías);
+   
+    this.tiendaService.getFormatos().subscribe(
+      formatos => {
+        this.formatos = formatos;
+      },
+      error => {
+        console.error('Error al obtener formatos:', error);
+      }
+    );
   }
 
   compararCategoria(o1: Categoria, o2:Categoria): boolean{
@@ -45,6 +59,7 @@ export class FormArticuloComponent implements OnInit{
       swal('Error Upload: ', 'Debe seleccionar una foto', 'error');
     }else{
       this.articulo.categorias = [this.categoriaSeleccionada]; // Assign only the selected category
+      this.articulo.formatos = this.formatoSeleccionados;
       this.tiendaService.create(this.articulo, this.fotoSeleccionada).subscribe({
         next:
           articulo => {
@@ -59,18 +74,41 @@ export class FormArticuloComponent implements OnInit{
   }
 
   createCategoria(): void{
-    this.nuevaCategoria.esGaleria = false;
-    this.galeriaService.createCategoria(this.nuevaCategoria).subscribe({
-      next:
-        categoria => {
-          this.displayActivationDialog = false;
-          this.galeriaService.getCategorias().subscribe(categorias => this.categorias = categorias.filter(categoria => !categoria.esGaleria));  // Filtrar categorías);
-          swal('Nueva categoría', `La categoría ${categoria.nombre} ha sido creada con éxito`, 'success');},
-        error:
-          err => {
-            this.errores = err.error.errors as string[];
-            console.error('Código del error desde el backend: ' + err.status);}
-    });
+    if(this.categorias.find(x => x.nombre.toLocaleLowerCase() == this.nuevaCategoria.nombre.toLocaleLowerCase())){
+      swal('Categoria Existente', `La categoría ${this.nuevaCategoria.nombre} ya existe!`, 'error');
+    } else{
+      this.nuevaCategoria.esGaleria = false;
+      this.galeriaService.createCategoria(this.nuevaCategoria).subscribe({
+        next:
+          categoria => {
+            this.displayActivationDialog = false;
+            this.galeriaService.getCategorias().subscribe(categorias => this.categorias = categorias.filter(categoria => !categoria.esGaleria));  // Filtrar categorías);
+            swal('Nueva categoría', `La categoría ${categoria.nombre} ha sido creada con éxito`, 'success');},
+          error:
+            err => {
+              this.errores = err.error.errors as string[];
+              console.error('Código del error desde el backend: ' + err.status);}
+      });
+    }
+  }
+
+  crearFormato(): void {
+       
+    if(this.formatos.find(x => x.tamanio.toLocaleLowerCase() == this.nuevoFormato.tamanio.toLocaleLowerCase())){
+      swal('Formato Existente', `El formato ${this.nuevoFormato.tamanio} ya existe!`, 'error');
+    } else{
+      this.tiendaService.crearFormato(this.nuevoFormato).subscribe(
+        (formato: Formato) => {
+          this.formatos.push(formato);
+          swal('Formato Creado', `Formato ${formato.tamanio} creado con éxito!`, 'success');
+          this.nuevoFormato = new Formato();
+        },
+        error => {
+          this.errores = error.error.errors as string[];
+          console.error('Error al crear formato:', error);
+        }
+      );
+    }
   }
 
   mostrarPDialogCategoria(): void{

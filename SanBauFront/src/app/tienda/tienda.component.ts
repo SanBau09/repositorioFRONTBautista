@@ -6,6 +6,7 @@ import { Categoria } from '../galeria/categoria';
 import { GaleriaService } from '../galeria/galeria.service';
 import swal from 'sweetalert2';
 import { HttpEventType } from '@angular/common/http';
+import { Formato } from './formato';
 
 @Component({
   selector: 'app-tienda',
@@ -17,6 +18,7 @@ export class TiendaComponent implements OnInit {
   articulosFiltrados: Articulo[];
   articuloAEditar: Articulo;
   categorias: Categoria[];
+  formatos: Formato[] = [];
 
   displayActivationDialog: boolean = false;     // Variable para controlar la visibilidad del diálogo de editar articulo
   fotoSeleccionada: File;
@@ -24,12 +26,19 @@ export class TiendaComponent implements OnInit {
 
   public errores: string[];
 
+  articuloSeleccionado: Articulo;
+  formatoSeleccionados: Formato[] = [];
+  nuevoFormato: Formato = new Formato(); // Nuevo formato a crear
+  displayDetallesDialog: boolean = false; 
+ 
+
   constructor(private galeriaService: GaleriaService, private tiendaService: TiendaService, public authService: AuthService){}
 
   ngOnInit(): void {
     this.obtenerArticulos();
     this.obtenerCategorias();
-    
+
+    this.obtenerFormatos();
   }
 
   obtenerArticulos(): void {
@@ -55,6 +64,17 @@ export class TiendaComponent implements OnInit {
     );
   }
 
+  obtenerFormatos(): void {
+    this.tiendaService.getFormatos().subscribe(
+      formatos => {
+        this.formatos = formatos;
+      },
+      error => {
+        console.error('Error al obtener formatos:', error);
+      }
+    );
+  }
+
   compararCategoria(o1: Categoria, o2:Categoria): boolean{
     if(o1 === undefined && o2 === undefined){
       return true;
@@ -72,6 +92,7 @@ export class TiendaComponent implements OnInit {
   }
 
   editarArticulo(): void{
+    this.articuloAEditar.formatos = this.formatoSeleccionados;
     this.tiendaService.editarArticulo(this.articuloAEditar).subscribe({
       next:
           json => {
@@ -121,7 +142,15 @@ export class TiendaComponent implements OnInit {
   mostrarPDialogEditarArticulo(articulo): void{
     this.displayActivationDialog = true; // Mostrar el diálogo
     this.articuloAEditar = articulo;
+
+    this.formatoSeleccionados = [];    
+    this.formatoSeleccionados = this.formatos.filter(x => this.articuloAEditar.formatos.find(y => x.id == y.id) );   
     this.progreso = 0;
+  }
+
+  mostrarDetallesArticulo(articulo: Articulo): void {
+    this.articuloSeleccionado = articulo;
+    this.displayDetallesDialog = true;
   }
 
   eliminarArticulo(articulo: Articulo) : void {

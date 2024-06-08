@@ -64,11 +64,60 @@ export class UsuariosService {
     );
   }
 
+  editarUsuario(usuario: Usuario): Observable<any>{
+    return this.http.put<any>(` ${this.urlEndPoint}/${usuario.id}`, usuario, {headers: this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=> {
+
+        if(this.isNoAutorizado(e)){
+          return throwError(()=>e);
+        }
+        if(e.status==400){
+          return throwError(()=>e);
+        }
+
+        console.error(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(()=>e);
+      })
+    )
+  }
+
   getPaises(): Observable<Pais[]>{
     return this.http.get<Pais[]>(this.urlEndPoint + '/paises', {headers: this.agregarAuthorizationHeader()}).pipe(
       catchError(e=>{
         return throwError(()=>e);
       })
     );
+  }
+
+  
+  getUsuarioPorUsername(username): Observable<Usuario>{
+    return this.http.get<Usuario>(` ${this.urlEndPoint}/user/${username}`, {headers: this.agregarAuthorizationHeader()}).pipe(
+      catchError(e =>{
+        if(this.isNoAutorizado(e)){
+          return throwError(()=>e);
+        }
+
+        this.router.navigate(['/galeria']);
+        console.error(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+
+        return throwError(()=>e);
+    }));
+  }
+
+  getUsuario(id): Observable<Usuario>{
+    return this.http.get<Usuario>(` ${this.urlEndPoint}/${id}`, {headers: this.agregarAuthorizationHeader()}).pipe(
+      catchError(e =>{
+        if(this.isNoAutorizado(e)){
+          return throwError(()=>e);
+        }
+
+        this.router.navigate(['/galeria']);
+        console.error(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+
+        return throwError(()=>e);
+    }));
   }
 }

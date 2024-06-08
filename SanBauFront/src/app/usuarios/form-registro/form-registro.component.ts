@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {UsuariosService} from '../usuarios.service';
 import { Usuario } from '../usuario';
 import swal from 'sweetalert2';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Pais } from '../pais';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-form-registro',
@@ -18,14 +19,25 @@ export class FormRegistroComponent implements OnInit  {
 
 
 
-  constructor(private usuariosService: UsuariosService, private router: Router){}
+
+
+  constructor(public authService:AuthService, private usuariosService: UsuariosService, private router: Router, private activatedRoute: ActivatedRoute){}
 
   ngOnInit(){
-    this.usuariosService.getPaises().subscribe(
-      paises => this.paises = paises);
+    this.cargarUsuario();
+    this.usuariosService.getPaises().subscribe( paises => this.paises = paises);
   
   }
 
+ 
+  cargarUsuario(): void{
+    this.activatedRoute.params.subscribe(params => {
+      let usuarioActual = this.authService.usuario;
+      if(usuarioActual.username){
+        this.usuariosService.getUsuarioPorUsername(usuarioActual.username).subscribe( (usuario) => this.usuario = usuario)
+      }
+    })
+  }
   
   public create(): void{
     this.usuariosService.create(this.usuario).subscribe({
@@ -39,6 +51,19 @@ export class FormRegistroComponent implements OnInit  {
             swal('Error al crear usuario', errorMessage, 'error');
             console.error('Código del error desde el backend: ' + err.status);}
     });
+  }
+
+  editar(): void{
+    this.usuariosService.editarUsuario(this.usuario).subscribe({
+        next:
+          json => {
+            this.router.navigate(['/galeria'])
+            swal('Usuario Actualizado', `${json.mensaje}: ${json.usuario.username}`, 'success')},
+          error:
+            err => {
+              this.errores = err.error.errors as string[];
+              console.error('Código del error desde el backend: ' + err.status);}
+        });
   }
 
   compararPais(o1: Pais, o2:Pais): boolean{

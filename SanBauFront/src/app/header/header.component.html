@@ -20,6 +20,8 @@
       </li>
     </ul>
     <ul class="navbar-nav navbar-right">
+      <li class="nav-link mr-3" *ngIf="authService.isAuthenticated()"><i class="fas fa-cart-shopping"></i> </li>
+
       <li *ngIf="!authService.isAuthenticated()"><a [routerLink]="['/login']" class="btn btn-outline-primary">Login</a></li>
 
       <li *ngIf="authService.isAuthenticated()" class="dropdown">
@@ -28,12 +30,13 @@
         </a>
 
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <!-- Agregar enlace para agregar ilustraciones -->
-          <a *ngIf="authService.hasRol('ROLE_ADMIN')" class="dropdown-item" routerLink="/galeria/form-ilustracion">Añadir Ilustración</a>
-          <!-- Agregar enlace para agregar articulos -->
-          <a *ngIf="authService.hasRol('ROLE_ADMIN')" class="dropdown-item" routerLink="/tienda/form-articulo">Añadir Artículo</a>
-          <!-- Agregar el botón de logout -->
-           <button (click)="logout()" class="dropdown-item" type="submit">Logout</button>
+          <!--ADMIN Agregar enlace para agregar ilustraciones -->
+          <a *ngIf="authService.hasRol('ROLE_ADMIN')" class="dropdown-item" routerLink="/galeria/form-ilustracion"><i class="fas fa-plus"></i> Ilustración</a>
+          <!--ADMIN Agregar enlace para agregar articulos -->
+          <a *ngIf="authService.hasRol('ROLE_ADMIN')" class="dropdown-item" routerLink="/tienda/form-articulo"><i class="fas fa-plus"></i> Artículo</a>
+          <!--USER ver mi perfil para editar -->
+          <a *ngIf="authService.hasRol('ROLE_USER')" class="dropdown-item" routerLink="/usuarios/form-registro"><i class="fa-regular fa-eye"></i> perfil</a>
+           <button (click)="logout()" class="dropdown-item" type="submit"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
         </div>
       </li>
     </ul>

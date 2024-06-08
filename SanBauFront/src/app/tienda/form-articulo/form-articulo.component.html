@@ -67,6 +67,29 @@
                 </div>
             </div>
 
+
+            <div class="form-group row">
+                <label for="formato" class="col-form-label col-sm-2">Formato</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" [(ngModel)]="nuevoFormato.tamanio" name="formato" placeholder="Ingrese el formato (ej. XL para camisetas, 200x400 para ilustraciones)">
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-crear" type="button" (click)="crearFormato()">Crear Formato</button>
+                </div>
+            </div>
+
+            <div *ngIf="formatos?.length > 0" class="form-group row">
+                <label for="formatos" class="col-form-label col-sm-2">Formatos Disponibles</label>
+                <div class="col-sm-10">
+                  <div class="d-flex flex-wrap">
+                    <div *ngFor="let formato of formatos" class="field-checkbox mr-3 mb-3">
+                      <p-checkbox name="formatos" [value]="formato" [(ngModel)]="formatoSeleccionados" [inputId]="formato.id"></p-checkbox>
+                        <label  class="form-check-label ml-1" [for]="formato.id">{{ formato.tamanio }}</label>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
             <div class="col-sm">
                 <div class="input-group">
                     <input (change)="seleccionarFoto($event)" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">

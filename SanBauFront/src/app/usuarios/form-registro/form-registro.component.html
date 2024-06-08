@@ -5,154 +5,165 @@
 </ul>
 
 <div class="card bg-dark text-white">
-    <div class="card-header">Registro de Usuarios</div>
+    <div class="card-header text-center">
+        <ng-container *ngIf="authService.hasRol('ROLE_USER'); else notAuthenticated">
+            Mi Perfil
+        </ng-container>
+        <ng-template #notAuthenticated>
+            Registro de Usuarios
+        </ng-template>
+    </div>
     <div class="card-body">
-
         <form #usuarioForm="ngForm">
-            <div class="form-group row">
-                <label for="nombre" class="col-form-label col-sm-2">Nombre</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="usuario.nombre" name="nombre" #nombre="ngModel" required>
-                    <div class="alert alert-danger" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
-                        <div *ngIf="nombre.errors.required">
-                            Nombre es requerido
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group row mb-2">
+                        <label for="nombre" class="col-sm-4 col-form-label">Nombre</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" [(ngModel)]="usuario.nombre" name="nombre" #nombre="ngModel" required>
+                            <div class="alert alert-danger" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
+                                <div *ngIf="nombre.errors.required">
+                                    Nombre es requerido
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-2">
+                        <label for="apellidos" class="col-sm-4 col-form-label">Apellidos</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" [(ngModel)]="usuario.apellidos" name="apellidos" #apellidos="ngModel" required>
+                            <div class="alert alert-danger" *ngIf="apellidos.invalid && (apellidos.dirty || apellidos.touched)">
+                                <div *ngIf="apellidos.errors.required">
+                                    Apellidos es requerido
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-2" *ngIf="!authService.hasRol('ROLE_USER')">
+                        <label for="email" class="col-sm-4 col-form-label">Email</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" [(ngModel)]="usuario.email" name="email" #email="ngModel" required>
+                            <div class="alert alert-danger" *ngIf="email.invalid && (email.dirty || email.touched)">
+                                <div *ngIf="email.errors.required">
+                                    Email es requerido
+                                </div>
+                                <div *ngIf="email.errors.email">
+                                    Email debe tener un formato válido
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-2" *ngIf="!authService.hasRol('ROLE_USER')">
+                        <label for="username" class="col-sm-4 col-form-label">Username</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" [(ngModel)]="usuario.username" name="username" #username="ngModel" required>
+                            <div class="alert alert-danger" *ngIf="username.invalid && (username.dirty || username.touched)">
+                                <div *ngIf="username.errors.required">
+                                    Username es requerido
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-2" *ngIf="!authService.hasRol('ROLE_USER')">
+                        <label for="password" class="col-sm-4 col-form-label">Password</label>
+                        <div class="col-sm-8">
+                            <input type="password" class="form-control" [(ngModel)]="usuario.password" name="password" #password="ngModel" required>
+                            <div class="alert alert-danger" *ngIf="password.invalid && (password.dirty || password.touched)">
+                                <div *ngIf="password.errors.required">
+                                    Password es requerido
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-2">
+                        <label for="telefono" class="col-sm-4 col-form-label">Teléfono</label>
+                        <div class="col-sm-8">
+                            <input type="tel" class="form-control" [(ngModel)]="usuario.telefono" name="telefono" #telefono="ngModel" required>
+                            <div class="alert alert-danger" *ngIf="telefono.invalid && (telefono.dirty || telefono.touched)">
+                                <div *ngIf="telefono.errors.required">
+                                    Teléfono es requerido
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group row mb-2">
+                        <label for="cp" class="col-sm-4 col-form-label">CP</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" [(ngModel)]="usuario.cp" name="cp" #cp="ngModel" required>
+                            <div class="alert alert-danger" *ngIf="cp.invalid && (cp.dirty || cp.touched)">
+                                <div *ngIf="cp.errors.required">
+                                    CP es requerido
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-2">
+                        <label for="direccion" class="col-sm-4 col-form-label">Dirección</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" [(ngModel)]="usuario.direccion" name="direccion" #direccion="ngModel" required>
+                            <div class="alert alert-danger" *ngIf="direccion.invalid && (direccion.dirty || direccion.touched)">
+                                <div *ngIf="direccion.errors.required">
+                                    Dirección es requerida
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-2">
+                        <label for="provincia" class="col-sm-4 col-form-label">Provincia</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" [(ngModel)]="usuario.provincia" name="provincia" #provincia="ngModel" required>
+                            <div class="alert alert-danger" *ngIf="provincia.invalid && (provincia.dirty || provincia.touched)">
+                                <div *ngIf="provincia.errors.required">
+                                    Provincia es requerida
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-2">
+                        <label for="localidad" class="col-sm-4 col-form-label">Localidad</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" [(ngModel)]="usuario.localidad" name="localidad" #localidad="ngModel" required>
+                            <div class="alert alert-danger" *ngIf="localidad.invalid && (localidad.dirty || localidad.touched)">
+                                <div *ngIf="localidad.errors.required">
+                                    Localidad es requerida
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-2">
+                        <label for="pais" class="col-sm-4 col-form-label">País</label>
+                        <div class="col-sm-8">
+                            <select [compareWith]="compararPais" class="form-control" [(ngModel)]="usuario.pais" name="pais" >
+                                <option [ngValue]="undefined">--- seleccionar un país ---</option>
+                                <option *ngFor="let pais of paises" [ngValue]="pais">{{pais.nombre}}</option>
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="apellidos" class="col-form-label col-sm-2">Apellidos</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="usuario.apellidos" name="apellidos" #apellidos="ngModel" required>
-                    <div class="alert alert-danger" *ngIf="apellidos.invalid && (apellidos.dirty || apellidos.touched)">
-                        <div *ngIf="apellidos.errors.required">
-                            apellidos es requerido
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="email" class="col-form-label col-sm-2">Email</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="usuario.email" name="email" #email="ngModel" required>
-                    <div class="alert alert-danger" *ngIf="email.invalid && (email.dirty || email.touched)">
-                        <div *ngIf="email.errors.required">
-                            email es requerido
-                        </div>
-                        <div *ngIf="email.errors.email">
-                            email debe tener un formato válido
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="username" class="col-form-label col-sm-2">Username</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="usuario.username" name="username" #username="ngModel" required>
-                    <div class="alert alert-danger" *ngIf="username.invalid && (username.dirty || username.touched)">
-                        <div *ngIf="username.errors.required">
-                            username es requerido
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="password" class="col-form-label col-sm-2">Password</label>
-                <div class="col-sm-6">
-                    <input type="password" class="form-control" [(ngModel)]="usuario.password" name="password" #password="ngModel" required>
-                    <div class="alert alert-danger" *ngIf="password.invalid && (password.dirty || password.touched)">
-                        <div *ngIf="password.errors.required">
-                            password es requerido
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="telefono" class="col-form-label col-sm-2">Teléfono</label>
-                <div class="col-sm-6">
-                    <input type="tel" class="form-control" [(ngModel)]="usuario.telefono" name="telefono" #telefono="ngModel" required>
-                    <div class="alert alert-danger" *ngIf="telefono.invalid && (telefono.dirty || telefono.touched)">
-                        <div *ngIf="telefono.errors.required">
-                            telefono es requerido
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-group row">
-                <label for="cp" class="col-form-label col-sm-2">CP</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="usuario.cp" name="cp" #cp="ngModel" required>
-                    <div class="alert alert-danger" *ngIf="cp.invalid && (cp.dirty || cp.touched)">
-                        <div *ngIf="cp.errors.required">
-                            cp es requerido
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="direccion" class="col-form-label col-sm-2">Dirección</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="usuario.direccion" name="direccion" #direccion="ngModel" required>
-                    <div class="alert alert-danger" *ngIf="direccion.invalid && (direccion.dirty || direccion.touched)">
-                        <div *ngIf="direccion.errors.required">
-                            direccion es requerida
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="provincia" class="col-form-label col-sm-2">Provincia</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="usuario.provincia" name="provincia" #provincia="ngModel" required>
-                    <div class="alert alert-danger" *ngIf="provincia.invalid && (provincia.dirty || provincia.touched)">
-                        <div *ngIf="provincia.errors.required">
-                            provincia es requerida
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="localidad" class="col-form-label col-sm-2">Localidad</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="usuario.localidad" name="localidad" #localidad="ngModel" required>
-                    <div class="alert alert-danger" *ngIf="localidad.invalid && (localidad.dirty || localidad.touched)">
-                        <div *ngIf="localidad.errors.required">
-                            localidad es requerida
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="pais" class="col-form-label col-sm-2">País</label>
-                <div class="col-sm-6">
-                    <select [compareWith]="compararPais" class="form-control" [(ngModel)]="usuario.pais" name="pais" >
-                        <option [ngValue]="undefined">--- seleccionar un país ---</option>
-                        <option *ngFor="let pais of paises" [ngValue]="pais">{{pais.nombre}}</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class="col-sm-6">
-                    <button class="btn btn-primary" role="button" (click)="create()" *ngIf="!usuario.id else elseBlock" [disabled]="!usuarioForm.form.valid">Registrar</button>
-
-                    <ng-template #elseBlock>
-                        <button class="btn btn-primary" role="button" (click)="update()" [disabled]="!clienteForm.form.valid">Editar</button>
+                <div class="col-sm-12 text-center mt-3">
+                    <ng-container *ngIf="authService.hasRol('ROLE_USER'); else notUserRole">
+                        <button class="btn btn-primary" role="button" (click)="editar()">Editar</button>
+                    </ng-container>
+                    <ng-template #notUserRole>
+                        <button class="btn btn-primary" role="button" (click)="create()">Registrar</button>
                     </ng-template>
-                    
                 </div>
             </div>
         </form>
     </div>
-
 </div>
