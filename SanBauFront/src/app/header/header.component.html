@@ -21,7 +21,11 @@
     </ul>
     <ul class="navbar-nav navbar-right">
       <li class="nav-link mr-3" *ngIf="authService.isAuthenticated()">
-        <button class="btn btn-link" (click)="irAlCarrito()"> <i class="fas fa-cart-shopping"></i></button>
+        <button class="btn btn-link" (click)="irAlCarrito()"> <i class="fas fa-cart-shopping"></i>
+          <span class="position-absolute start-100 translate-middle badge rounded-pill bg-light" style="top: 7px;">
+            {{totalArticulos}}
+          </span>
+        </button>
       </li>
 
       <li *ngIf="!authService.isAuthenticated()"><a [routerLink]="['/login']" class="btn btn-outline-primary">Login</a></li>
@@ -38,7 +42,10 @@
           <a *ngIf="authService.hasRol('ROLE_ADMIN')" class="dropdown-item" routerLink="/tienda/form-articulo"><i class="fas fa-plus"></i> Artículo</a>
           <!--USER ver mi perfil para editar -->
           <a *ngIf="authService.hasRol('ROLE_USER')" class="dropdown-item" routerLink="/usuarios/form-registro"><i class="fa-regular fa-eye"></i> perfil</a>
-           <button (click)="logout()" class="dropdown-item" type="submit"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+          <!--USER/ADMIN ver mis pedidos -->
+          <a  class="dropdown-item" routerLink="/usuarios/compras"><i class="fa-regular fa-eye"></i> pedidos</a>
+          <!--BOTON LOGOUT -->
+          <button (click)="logout()" class="dropdown-item" type="submit"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
         </div>
       </li>
     </ul>

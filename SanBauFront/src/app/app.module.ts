@@ -33,6 +33,7 @@ import { TiendaComponent } from './tienda/tienda.component';
 import { FormArticuloComponent } from './tienda/form-articulo/form-articulo.component';
 import { TiendaService } from './tienda/tienda.service';
 import { FormRegistroComponent } from './usuarios/form-registro/form-registro.component';
+import { ComprasComponent } from './usuarios/compras/compras.component';
 
 
 
@@ -59,7 +60,9 @@ const ROUTES: Routes = [
   {path: 'tienda/formatos', component: FormArticuloComponent},
   {path: 'tienda/venta', component: HeaderComponent},
 
-  {path: 'usuarios/form-registro', component: FormRegistroComponent}
+  {path: 'usuarios/form-registro', component: FormRegistroComponent},
+  {path: 'usuarios/compras', component: ComprasComponent},
+  {path: 'tienda/ventas', component: ComprasComponent}
   
 
 
@@ -82,7 +85,8 @@ const ROUTES: Routes = [
     FormIlustracionComponent,
     TiendaComponent,
     FormArticuloComponent,
-    FormRegistroComponent
+    FormRegistroComponent,
+    ComprasComponent
   ],
   imports: [
     BrowserModule,

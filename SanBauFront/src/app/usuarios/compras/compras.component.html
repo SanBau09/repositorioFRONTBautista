@@ -1,0 +1,22 @@
+<p-table [value]="ventas" responsiveLayout="scroll" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="caption">
+        <h3 *ngIf="authService.hasRol('ROLE_ADMIN')" ><span class="negrita">Tus Ventas </span>  <span class="gris">| {{totalPedidos}} pedidos</span></h3>
+        <h3 *ngIf="authService.hasRol('ROLE_USER')" ><span class="negrita">Tus Compras </span>  <span class="gris">| {{totalPedidos}} pedidos</span></h3>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr >          
+            <th style="text-align: center; vertical-align: middle;">Pedido</th>
+            <th style="text-align: center; vertical-align: middle;">Fecha Pedido</th>
+            <th style="text-align: center; vertical-align: middle;">Número Artículos Pedido</th>
+            <th style="text-align: center; vertical-align: middle;">Precio Total</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item>
+        <tr>          
+            <td style="text-align: center; vertical-align: middle;">{{item.id}}</td>
+            <td style="text-align: center; vertical-align: middle;">{{item.fechaVenta | date:'shortDate'}}</td>
+            <td style="text-align: center; vertical-align: middle;">{{item.articulos.length}}</td>
+            <td style="text-align: center; vertical-align: middle;">{{item.precioTotal}} €</td>          
+        </tr>
+    </ng-template>
+</p-table>

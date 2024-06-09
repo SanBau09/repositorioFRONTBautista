@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../usuarios/auth.service';
 import { TiendaService } from '../tienda/tienda.service';
 import swal from 'sweetalert2';
@@ -7,21 +7,46 @@ import { ItemCompra } from '../tienda/itemCompra';
 import { Venta } from '../tienda/venta';
 import { UsuariosService } from '../usuarios/usuarios.service';
 import { Articulo } from '../tienda/articulo';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy{
   displayCarritoDialog: boolean = false;
   carrito: ItemCompra[] = [];
   total: number = 0;
   totalArticulos: number = 0;
   gastosEnvio: number = 9; 
+  carritoSubscription: Subscription;
 
 
-  constructor(public authService:AuthService,public tiendaService:TiendaService, public usuariosService:UsuariosService,public router: Router){}
+  constructor(public authService:AuthService,public tiendaService:TiendaService, public usuariosService:UsuariosService,public router: Router){
+    // Suscribirse a los cambios del carrito para actualizar el total de artículos
+    this.tiendaService.carritoCambiado.subscribe(() => {
+      this.actualizarTotalArticulos();
+    });
+  }
+
+  ngOnInit(): void {
+    // Inicializar el carrito desde el servicio
+    this.carrito = this.tiendaService.listaCarrito;
+    this.actualizarTotalArticulos();
+
+    // Suscribirse a cambios en el carrito
+    this.carritoSubscription = this.tiendaService.carritoCambiado.subscribe(() => {
+      this.carrito = this.tiendaService.listaCarrito;
+      this.actualizarTotalArticulos();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.carritoSubscription) {
+      this.carritoSubscription.unsubscribe();
+    }
+  }
 
   logout():void{
     this.authService.logout();
@@ -107,5 +132,10 @@ export class HeaderComponent {
           'success');
       };    
     });
+  }
+
+  // Método para actualizar el total de artículos en el carrito
+  actualizarTotalArticulos(): void {
+    this.totalArticulos = this.carrito.reduce((sum, item) => sum + item.cantidad, 0);
   }
 }

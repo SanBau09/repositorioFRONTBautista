@@ -4,7 +4,7 @@ import { AuthService } from '../usuarios/auth.service';
 import { Router } from '@angular/router';
 import swal from 'sweetalert2';
 import { Articulo } from './articulo';
-import { Observable, catchError, map, tap, throwError } from 'rxjs';
+import { Observable, Subject, catchError, map, tap, throwError } from 'rxjs';
 import { Formato } from './formato';
 import { ItemCompra } from './itemCompra';
 import { Venta } from './venta';
@@ -17,6 +17,7 @@ export class TiendaService {
   private urlEndPoint:string = 'http://localhost:8080/tienda';
     private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
     private _listaCarrito : ItemCompra[];
+    carritoCambiado = new Subject<void>();
 
   constructor(private http: HttpClient, private router: Router, private authService: AuthService) {
     this._listaCarrito = this.loadCarritoFromSessionStorage();
@@ -38,16 +39,19 @@ export class TiendaService {
   public agregarArticuloAlCarrito(itemCompra: ItemCompra): void {
     this._listaCarrito.push(itemCompra);
     this.saveCarritoToSessionStorage();
+    this.carritoCambiado.next();
   }
 
   public eliminarArticuloDelCarrito(articuloId: number): void {
     this._listaCarrito = this._listaCarrito.filter(item => item.articulo.id !== articuloId);
     this.saveCarritoToSessionStorage();
+    this.carritoCambiado.next();
   }
 
   public vaciarCarrito(): void {
     this._listaCarrito = [];
     sessionStorage.removeItem('listaCarrito');
+    this.carritoCambiado.next();
   }
 
   createVenta(venta: Venta ) : Observable<Venta> {
@@ -72,7 +76,7 @@ export class TiendaService {
   }
 
   getVentas(): Observable<Venta[]>{
-    return this.http.get<Venta[]>(this.urlEndPoint + '/venta', {headers: this.agregarAuthorizationHeader()}).pipe(
+    return this.http.get<Venta[]>(this.urlEndPoint + '/ventas', {headers: this.agregarAuthorizationHeader()}).pipe(
       catchError(e=>{
         //this.isNoAutorizado(e);
 
@@ -214,7 +218,7 @@ export class TiendaService {
   getFormatosPorArticulo(articuloId){
 
   }
-
+  
   crearFormato(formato: Formato): Observable<Formato>{
     return this.http.post(this.urlEndPoint + "/formatos", formato, {headers:this.agregarAuthorizationHeader()}).pipe(
       map( (response : any) => response.formato as Formato),

@@ -1,3 +1,4 @@
+import { Venta } from "../tienda/venta";
 import { Pais } from "./pais";
 
 export class Usuario {
@@ -15,6 +16,7 @@ export class Usuario {
     cp: string;
     
     roles: string[] = [];
+    ventas: Venta[] = [];
 
     pais: Pais;
 }

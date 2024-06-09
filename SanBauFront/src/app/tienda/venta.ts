@@ -6,5 +6,6 @@ export class Venta{
     id: number;
     usuario : Usuario;
     precioTotal: number;
+    fechaVenta: Date;
     articulos : Articulo[];
 }
