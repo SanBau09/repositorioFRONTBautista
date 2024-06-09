@@ -172,11 +172,13 @@
       <div class="col-md-6">
         <h4>{{articuloSeleccionado?.titulo}}</h4>
         <p>{{articuloSeleccionado?.descripcion}}</p>
+        <label for="cantidad" class="col-form-label col-sm-2">Cantidad</label>
+        <input type="number" class="form-control" [(ngModel)]="cantidadSeleccionada" name="cantidad" #cantidad="ngModel" required min="1">
         <p><strong>Precio:</strong> {{articuloSeleccionado?.precio}} €</p>
                
         <!-- Selector de tamaños -->
         <div>
-          <label for="tamano">Seleccionar Tamaño:</label>
+          <label for="tamano">Seleccionar tamaño:</label>
           <select id="tamano" class="form-control" [(ngModel)]="formatoSeleccionado">
             <option *ngFor="let formato of articuloSeleccionado?.formatos" [ngValue]="formato">{{formato.tamanio}}</option>
           </select>
@@ -185,7 +187,7 @@
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
-    <button class="btn btn-success" (click)="aniadirArticulo(articuloSeleccionado)">Añadir al carrito</button>
+    <button class="btn btn-success" (click)="aniadirArticulo(articuloSeleccionado, formatoSeleccionado, cantidadSeleccionada)">Añadir al carrito</button>
   </ng-template>
 </p-dialog>
 

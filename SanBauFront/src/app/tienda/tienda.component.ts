@@ -7,6 +7,7 @@ import { GaleriaService } from '../galeria/galeria.service';
 import swal from 'sweetalert2';
 import { HttpEventType } from '@angular/common/http';
 import { Formato } from './formato';
+import { ItemCompra } from './itemCompra';
 
 @Component({
   selector: 'app-tienda',
@@ -26,8 +27,10 @@ export class TiendaComponent implements OnInit {
 
   public errores: string[];
 
+  cantidadSeleccionada: number = 1;
   articuloSeleccionado: Articulo;
   formatoSeleccionados: Formato[] = [];
+  formatoSeleccionado: Formato ;
   nuevoFormato: Formato = new Formato(); // Nuevo formato a crear
   displayDetallesDialog: boolean = false; 
  
@@ -150,6 +153,8 @@ export class TiendaComponent implements OnInit {
 
   mostrarDetallesArticulo(articulo: Articulo): void {
     this.articuloSeleccionado = articulo;
+    this.formatoSeleccionado = new Formato();
+    this.cantidadSeleccionada = 1;
     this.displayDetallesDialog = true;
   }
 
@@ -177,6 +182,20 @@ export class TiendaComponent implements OnInit {
             });
           }
     });
+  }
+
+  aniadirArticulo(articuloSeleccionado : Articulo, formatoSeleccionado : Formato, cantidad : number): void {
+    if(articuloSeleccionado && formatoSeleccionado){
+      let item = new ItemCompra();
+      item.articulo = articuloSeleccionado;
+      item.formato = formatoSeleccionado;
+      item.cantidad = cantidad;
+      this.tiendaService.agregarArticuloAlCarrito(item);
+      swal('Carrito',` Se ha añadido el artículo ${articuloSeleccionado.titulo} al carrito`, 'info');
+    }else{
+      swal('Carrito','Falta algún campo', 'error');
+    }
+    
   }
 
 }

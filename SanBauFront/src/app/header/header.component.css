@@ -22,3 +22,19 @@
   display: flex;
   align-items: center;
 }
+
+.negrita {
+  font-weight: bold;
+}
+
+.gris {
+  color: gray;
+  font-weight: normal;
+  font-size: medium;
+}
+
+.custom-smaller-image {
+  width: 50px; /* Ancho personalizado */
+  height: auto; /* Ajusta la altura automáticamente para mantener la proporción */
+  border-radius: 5px; /* Esquinas redondeadas */
+}

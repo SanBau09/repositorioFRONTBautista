@@ -95,6 +95,7 @@ export class AuthService {
     sessionStorage.clear();
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('usuario');
+    sessionStorage.removeItem('listaCarrito');
   }
   
 }

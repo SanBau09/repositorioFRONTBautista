@@ -5,8 +5,9 @@ import { Router } from '@angular/router';
 import swal from 'sweetalert2';
 import { Articulo } from './articulo';
 import { Observable, catchError, map, tap, throwError } from 'rxjs';
-import { Categoria } from '../galeria/categoria';
 import { Formato } from './formato';
+import { ItemCompra } from './itemCompra';
+import { Venta } from './venta';
 
 
 @Injectable({
@@ -15,8 +16,70 @@ import { Formato } from './formato';
 export class TiendaService {
   private urlEndPoint:string = 'http://localhost:8080/tienda';
     private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
+    private _listaCarrito : ItemCompra[];
 
-  constructor(private http: HttpClient, private router: Router, private authService: AuthService) { }
+  constructor(private http: HttpClient, private router: Router, private authService: AuthService) {
+    this._listaCarrito = this.loadCarritoFromSessionStorage();
+  }
+
+   private loadCarritoFromSessionStorage(): ItemCompra[] {
+    const storedCarrito = sessionStorage.getItem('listaCarrito');
+    return storedCarrito ? JSON.parse(storedCarrito) as ItemCompra[] : [];
+  }
+
+  private saveCarritoToSessionStorage(): void {
+    sessionStorage.setItem('listaCarrito', JSON.stringify(this._listaCarrito));
+  }
+
+  public get listaCarrito(): ItemCompra[] {
+    return this._listaCarrito;
+  }
+
+  public agregarArticuloAlCarrito(itemCompra: ItemCompra): void {
+    this._listaCarrito.push(itemCompra);
+    this.saveCarritoToSessionStorage();
+  }
+
+  public eliminarArticuloDelCarrito(articuloId: number): void {
+    this._listaCarrito = this._listaCarrito.filter(item => item.articulo.id !== articuloId);
+    this.saveCarritoToSessionStorage();
+  }
+
+  public vaciarCarrito(): void {
+    this._listaCarrito = [];
+    sessionStorage.removeItem('listaCarrito');
+  }
+
+  createVenta(venta: Venta ) : Observable<Venta> {
+
+    return this.http.post(this.urlEndPoint + "/venta", venta, {headers:this.agregarAuthorizationHeader()}).pipe(
+      map( (response : any) => response.venta as Venta),
+      catchError(e=> {
+
+        if(this.isNoAutorizado(e)){
+          return throwError(()=>e);
+        }
+
+        if(e.status==400){
+          return throwError(()=>e);
+        }
+
+        console.error(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(()=>e);
+      })
+    );
+  }
+
+  getVentas(): Observable<Venta[]>{
+    return this.http.get<Venta[]>(this.urlEndPoint + '/venta', {headers: this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        //this.isNoAutorizado(e);
+
+        return throwError(()=>e);
+      })
+    );
+  }
 
   private agregarAuthorizationHeader(){
     let token = this.authService.token;

@@ -20,7 +20,9 @@
       </li>
     </ul>
     <ul class="navbar-nav navbar-right">
-      <li class="nav-link mr-3" *ngIf="authService.isAuthenticated()"><i class="fas fa-cart-shopping"></i> </li>
+      <li class="nav-link mr-3" *ngIf="authService.isAuthenticated()">
+        <button class="btn btn-link" (click)="irAlCarrito()"> <i class="fas fa-cart-shopping"></i></button>
+      </li>
 
       <li *ngIf="!authService.isAuthenticated()"><a [routerLink]="['/login']" class="btn btn-outline-primary">Login</a></li>
 
@@ -42,3 +44,50 @@
     </ul>
   </div>
 </nav>
+
+<!-- Diálogo para mostrar el carrito -->
+<p-dialog [(visible)]="displayCarritoDialog" [modal]="true" [closable]="true" [baseZIndex]="1000" [style]="{width: '70vw'}">
+  <ng-template pTemplate="header">
+    <h3><span class="negrita">Tu Carrito </span>  <span class="gris">| {{totalArticulos}} artículos</span></h3>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <p-table [value]="carrito" responsiveLayout="scroll" [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Artículo</th>
+          <th>Categoría</th>
+          <th>Título</th>
+          <th>Descripción</th>
+          <th>Formato</th>
+          <th>Precio</th>
+          <th>Cantidad</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td>
+            <img *ngIf="item.articulo.imagen" src="http://localhost:8080/api/uploads/img/{{item.articulo.imagen}}" 
+            alt="{{item.articulo.imagen}}" class="img-thumbnail rounded articulo-imagen custom-smaller-image">
+          </td>
+          <td>{{item.articulo.categorias[0].nombre}}</td>
+          <td>{{item.articulo.titulo}}</td>
+          <td>{{item.articulo.descripcion}}</td>
+          <td>{{item.formato.tamanio}}</td>
+          <td>{{item.articulo.precio}} €</td>
+          <td style="width: 15px;"><input  type="number" class="form-control" [(ngModel)]="item.cantidad" name="cantidad" #cantidad="ngModel" required min="1" (ngModelChange)="calcularTotal()"></td>
+          <td  style="width: 15px;"><button class="btn btn-eliminar" (click)="eliminarItem(item)"><i class="fas fa-trash"></i></button></td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <div class="mt-3 text-right">
+      <h4 class="negrita">Resumen del Pedido</h4>
+      <p>{{totalArticulos}} artículos: {{total.toFixed(2) - gastosEnvio.toFixed(2)}} € </p>
+      <p>Envío ordinario: {{gastosEnvio.toFixed(2)}} € </p>
+      <h5>SubTotal : <span class="negrita">{{total.toFixed(2)}} €</span></h5>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button class="btn btn-crear" type="button" id="inputGroupFileAddon04" (click)="realizarCompra()">Realizar Compra</button>
+  </ng-template>
+</p-dialog>

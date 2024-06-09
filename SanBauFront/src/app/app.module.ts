@@ -28,6 +28,7 @@ import { GaleriaComponent } from './galeria/galeria.component';
 import { FormIlustracionComponent } from './galeria/form-ilustracion/form-ilustracion.component';
 import { DialogModule } from 'primeng/dialog';
 import { CheckboxModule } from 'primeng/checkbox';
+import { TableModule } from 'primeng/table';
 import { TiendaComponent } from './tienda/tienda.component';
 import { FormArticuloComponent } from './tienda/form-articulo/form-articulo.component';
 import { TiendaService } from './tienda/tienda.service';
@@ -56,6 +57,7 @@ const ROUTES: Routes = [
   {path: 'tienda/categorias', component: FormArticuloComponent},
   {path: 'tienda/articulos/upload', component: TiendaComponent},
   {path: 'tienda/formatos', component: FormArticuloComponent},
+  {path: 'tienda/venta', component: HeaderComponent},
 
   {path: 'usuarios/form-registro', component: FormRegistroComponent}
   
@@ -89,7 +91,8 @@ const ROUTES: Routes = [
     RouterModule.forRoot(ROUTES),
     BrowserAnimationsModule,
     DialogModule,
-    CheckboxModule
+    CheckboxModule,
+    TableModule
   ],
   providers: [ClienteService, GaleriaService, TiendaService, UsuariosService, {provide: LOCALE_ID, useValue: 'es'}],
   bootstrap: [AppComponent]
