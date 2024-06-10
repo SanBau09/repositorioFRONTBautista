@@ -1,5 +1,5 @@
 <div class="container">
-  <!--Menú filtrar por categorías-->
+  <!-- Menú filtrar por categorías -->
   <div class="row mb-4">
     <div class="col-md-4">
       <select class="form-control" (change)="filtrarPorCategoria($event.target.value)">
@@ -9,32 +9,34 @@
     </div>
   </div>
 
-<div class="row">
-<div class="col-md-4 mb-4" *ngFor="let articulo of articulosFiltrados">
-  <div class="card mb-4 shadow-sm h-100 text-center border-secondary">
-    <img src="http://localhost:8080/api/uploads/img/{{articulo.imagen}}" class="card-img-top" alt="{{articulo.imagen}}" 
-    style="width:100%; height:100%; object-fit: cover; cursor:pointer;"
-    data-toggle="tooltip" [title]="articulo.titulo" data-html="true" data-class="tooltip-custom"
-    (click)="mostrarDetallesArticulo(articulo)">
+  <!-- Iteración sobre los artículos filtrados -->
+  <div class="row">
+    <div class="col-md-4 mb-4" *ngFor="let articulo of articulosFiltrados">
+      <div class="card h-100">
+        <!-- Imagen del artículo -->
+        <img [src]="'http://localhost:8080/api/uploads/img/' + articulo.imagen" class="card-img-top" alt="{{articulo.imagen}}"
+          style="object-fit: contain; max-height: 200px; cursor:pointer;"
+          data-toggle="tooltip" [title]="articulo.titulo" data-html="true" data-class="tooltip-custom"
+          (click)="mostrarDetallesArticulo(articulo)">
 
-    <!--Solo el Admin puede ver las opciones editar y eliminar articulos-->
-    <div *ngIf="authService.hasRol('ROLE_ADMIN')"  class="card-body">
-      <h5 class="card-title">{{articulo.titulo}}</h5>
-      <div>
-        <button class="btn btn-editar mr-3" (click)="mostrarPDialogEditarArticulo(articulo)"><i class="fas fa-pen"></i></button>
-        <button class="btn btn-eliminar" (click)="eliminarArticulo(articulo)"><i class="fas fa-trash"></i></button>
-      </div>
-    </div>
-
-    <!--Solo el User y un usuario no registrado pueden ver el nombre y el precio de los articulos-->
-    <div *ngIf="!authService.hasRol('ROLE_ADMIN')"  class="card-body">
-      <h5 class="card-title">{{articulo.titulo}}</h5>
-      <div>
-        <p>{{articulo.precio}} €</p>
+        <!-- Contenido de la tarjeta según el rol del usuario -->
+        <div class="card-body text-center" style="max-height: 100px; overflow: hidden;">
+          <h5 class="card-title">{{articulo.titulo}}</h5>
+          
+          <!-- Opciones para administradores -->
+          <div *ngIf="authService.hasRol('ROLE_ADMIN')">
+            <button class="btn btn-editar mr-3" (click)="mostrarPDialogEditarArticulo(articulo)"><i class="fas fa-pen"></i></button>
+            <button class="btn btn-eliminar" (click)="eliminarArticulo(articulo)"><i class="fas fa-trash"></i></button>
+          </div>
+          
+          <!-- Información de precio para usuarios normales -->
+          <div *ngIf="!authService.hasRol('ROLE_ADMIN')">
+            <p>{{articulo.precio}} €</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </div>
 
 <!--Ventana al formulario de editar articulo-->

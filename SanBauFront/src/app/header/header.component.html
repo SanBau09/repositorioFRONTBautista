@@ -1,55 +1,59 @@
 <header class="header"></header>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto mx-auto">
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/galeria/ilustraciones">Galería<span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/aboutMe">Sobre mi</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/aboutMe">Contacto</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/tienda/articulos">Tienda</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['/clientes']">Clientes</a>
-      </li>
-    </ul>
-    <ul class="navbar-nav navbar-right">
-      <li class="nav-link mr-3" *ngIf="authService.isAuthenticated()">
-        <button class="btn btn-link" (click)="irAlCarrito()"> <i class="fas fa-cart-shopping"></i>
-          <span class="position-absolute start-100 translate-middle badge rounded-pill bg-light" style="top: 7px;">
-            {{totalArticulos}}
-          </span>
-        </button>
-      </li>
-
-      <li *ngIf="!authService.isAuthenticated()"><a [routerLink]="['/login']" class="btn btn-outline-primary">Login</a></li>
-
-      <li *ngIf="authService.isAuthenticated()" class="dropdown">
-        <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {{authService.usuario.username}}
-        </a>
-
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <!--ADMIN Agregar enlace para agregar ilustraciones -->
-          <a *ngIf="authService.hasRol('ROLE_ADMIN')" class="dropdown-item" routerLink="/galeria/form-ilustracion"><i class="fas fa-plus"></i> Ilustración</a>
-          <!--ADMIN Agregar enlace para agregar articulos -->
-          <a *ngIf="authService.hasRol('ROLE_ADMIN')" class="dropdown-item" routerLink="/tienda/form-articulo"><i class="fas fa-plus"></i> Artículo</a>
-          <!--USER ver mi perfil para editar -->
-          <a *ngIf="authService.hasRol('ROLE_USER')" class="dropdown-item" routerLink="/usuarios/form-registro"><i class="fa-regular fa-eye"></i> perfil</a>
-          <!--USER/ADMIN ver mis pedidos -->
-          <a  class="dropdown-item" routerLink="/usuarios/compras"><i class="fa-regular fa-eye"></i> pedidos</a>
-          <!--BOTON LOGOUT -->
-          <button (click)="logout()" class="dropdown-item" type="submit"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
-        </div>
-      </li>
-    </ul>
+    <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+      <ul class="navbar-nav text-center">
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/galeria/ilustraciones">Galería<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/aboutMe">Sobre mi</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/tienda/articulos">Tienda</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/clientes']">Clientes</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav navbar-right">
+        <li class="nav-link mr-3" *ngIf="authService.isAuthenticated()">
+          <button class="btn btn-link position-relative" (click)="irAlCarrito()"> <i class="fas fa-cart-shopping"></i>
+            <span class="position-absolute start-100 translate-middle badge rounded-pill bg-light">
+              {{totalArticulos}}
+            </span>
+          </button>
+        </li>
+  
+        <li *ngIf="!authService.isAuthenticated()"><a [routerLink]="['/login']" class="btn btn-outline-primary">Login</a></li>
+  
+        <li *ngIf="authService.isAuthenticated()" class="dropdown">
+          <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{authService.usuario.username}}
+          </a>
+  
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <!--ADMIN Agregar enlace para agregar ilustraciones -->
+            <a *ngIf="authService.hasRol('ROLE_ADMIN')" class="dropdown-item" routerLink="/galeria/form-ilustracion"><i class="fas fa-plus"></i> Ilustración</a>
+            <!--ADMIN Agregar enlace para agregar articulos -->
+            <a *ngIf="authService.hasRol('ROLE_ADMIN')" class="dropdown-item" routerLink="/tienda/form-articulo"><i class="fas fa-plus"></i> Artículo</a>
+            <!--USER ver mi perfil para editar -->
+            <a *ngIf="authService.hasRol('ROLE_USER')" class="dropdown-item" routerLink="/usuarios/form-registro"><i class="fa-regular fa-eye"></i> perfil</a>
+            <!--USER/ADMIN ver mis pedidos -->
+            <a  class="dropdown-item" routerLink="/usuarios/compras"><i class="fa-regular fa-eye"></i> pedidos</a>
+            <!--BOTON LOGOUT -->
+            <button (click)="logout()" class="dropdown-item" type="submit"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
+
+  
 </nav>
 
 <!-- Diálogo para mostrar el carrito -->

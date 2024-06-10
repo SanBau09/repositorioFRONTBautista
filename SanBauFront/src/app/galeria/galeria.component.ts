@@ -25,6 +25,13 @@ export class GaleriaComponent implements OnInit{
 
   public errores: string[];
 
+  
+  // Variable para controlar la visibilidad del modal de imagen en tamaño completo
+  displayImageModal: boolean = false;
+  modalImagenSeleccionada: Ilustracion;
+
+
+
   constructor(private galeriaService: GaleriaService, public authService: AuthService){}
 
   ngOnInit(): void {
@@ -150,10 +157,22 @@ export class GaleriaComponent implements OnInit{
   }
 
 
-  mostrarPDialogEditarIlustacion(ilustracion): void{
+  mostrarPDialogEditarIlustracion(ilustracion): void{
     this.displayActivationDialog = true; // Mostrar el diálogo
     this.ilustracionAEditar = ilustracion;
     this.progreso = 0;
+  }
+
+  // Método para mostrar la imagen en tamaño completo
+  mostrarImagenModal(ilustracion: Ilustracion): void {
+    this.modalImagenSeleccionada = ilustracion;
+    this.displayImageModal = true;
+  }
+
+  // Método para cerrar el modal de imagen en tamaño completo
+  cerrarModalImagen(): void {
+    this.displayImageModal = false;
+    this.modalImagenSeleccionada = null;
   }
   
 

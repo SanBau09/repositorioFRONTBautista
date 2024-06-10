@@ -15,16 +15,22 @@
 
   <div class="row">
     <div class="col-md-4 mb-4" *ngFor="let ilustracion of ilustracionesFiltradas">
-      <div class="card mb-4 shadow-sm h-100 text-center border-secondary">
-        <img src="http://localhost:8080/api/uploads/img/{{ilustracion.imagen}}" class="card-img-top" alt="{{ilustracion.imagen}}" 
-        style="width:100%; height:100%; object-fit: cover; cursor:pointer;"
-        data-toggle="tooltip" [title]="ilustracion.titulo" data-html="true" data-class="tooltip-custom">
-
-         <!--Solo el Admin puede ver las opciones editar y eliminar ilustraciones-->
-        <div *ngIf="authService.hasRol('ROLE_ADMIN')"  class="card-body">
+      <div class="card h-100">
+        <!-- Enlace para abrir el modal con la imagen -->
+        <a href="javascript:void(0)" (click)="mostrarImagenModal(ilustracion)">
+        <!-- Imagen de la ilustración -->
+          <img [src]="'http://localhost:8080/api/uploads/img/' + ilustracion.imagen" class="card-img-top" alt="{{ilustracion.imagen}}"
+            style="object-fit: contain; max-height: 200px; cursor:pointer;"
+            data-toggle="tooltip" [title]="ilustracion.titulo" data-html="true" data-class="tooltip-custom"
+            (click)="mostrarImagenModal(ilustracion)">
+        </a>
+        <!-- Contenido de la tarjeta según el rol del usuario -->
+        <div class="card-body text-center" style="max-height: 100px; overflow: hidden;">
           <h5 class="card-title">{{ilustracion.titulo}}</h5>
-          <div>
-            <button class="btn btn-editar mr-3" (click)="mostrarPDialogEditarIlustacion(ilustracion)"><i class="fas fa-pen"></i></button>
+          
+          <!-- Opciones para administradores -->
+          <div *ngIf="authService.hasRol('ROLE_ADMIN')">
+            <button class="btn btn-editar mr-3" (click)="mostrarPDialogEditarIlustracion(ilustracion)"><i class="fas fa-pen"></i></button>
             <button class="btn btn-eliminar" (click)="eliminarIlustracion(ilustracion)"><i class="fas fa-trash"></i></button>
           </div>
         </div>
@@ -32,6 +38,27 @@
     </div>
   </div>
 </div>
+
+<!-- Modal para mostrar la imagen en tamaño completo -->
+<div *ngIf="displayImageModal" class="modal fade show" tabindex="-1" role="dialog" style="display: block;"
+  (click)="cerrarModalImagen()">
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ modalImagenSeleccionada?.titulo }}</h5>
+        <button type="button" class="close" (click)="cerrarModalImagen()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <img *ngIf="modalImagenSeleccionada?.imagen"
+          [src]="'http://localhost:8080/api/uploads/img/' + modalImagenSeleccionada.imagen" class="img-fluid"
+          alt="{{ modalImagenSeleccionada?.titulo }}">
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="displayImageModal" class="modal-backdrop fade show"></div>
 
 <!--Ventana al formulario de editar ilustracion-->
 <p-dialog [(visible)]="displayActivationDialog" [modal]="true" [closable]="true" [baseZIndex]="1000" [style]="{width: '60vw',height:'80vh'}">
