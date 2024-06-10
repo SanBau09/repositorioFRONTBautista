@@ -25,14 +25,19 @@
 
             <div class="form-group row">
                 <label for="categoria" class="col-form-label col-sm-2">Categoría</label>
-                <div class="col-sm-8">
+                <div class="col-sm-6">
                     <select [compareWith]="compararCategoria" class="form-control" [(ngModel)]="categoriaSeleccionada" name="categoria" ><!-- required -->
                         <option [ngValue]="undefined">--- selecciona una categoría ---</option>
                         <option *ngFor="let categoria of categorias" [ngValue]="categoria">{{categoria.nombre}}</option>
                     </select>
                 </div>
-                <div class="col-sm-2">
-                    <button class="btn btn-crear" type="button" id="inputGroupFileAddon04" (click)="mostrarPDialogCategoria()">Crear Categoría</button> 
+                
+                <div class="col-sm-4 d-flex align-items-center">
+                    <!--boton añadir categoria-->
+                    <button class="btn btn-crear" type="button" id="inputGroupFileAddon04" (click)="mostrarPDialogCategoria()"><i class="fas fa-plus"></i></button> 
+  
+                    <!--boton eliminar categoria-->
+                    <button class="btn btn-eliminar ml-2" type="button" id="inputGroupFileAddon04" (click)="eliminarCategoria()"><i class="fas fa-trash"></i></button> 
                 </div>
             </div>
 

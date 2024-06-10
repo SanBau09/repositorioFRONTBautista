@@ -177,33 +177,19 @@ export class GaleriaService{
       );
     }
 
-
-    /*subirFoto(archivo: File, id): Observable<HttpEvent<{}>>{
-      let formData = new FormData();
-      formData.append("archivo", archivo);
-      formData.append("id", id);
-
-      let httpHeaders = new HttpHeaders();
-      let token = this.authService.token;
-
-      if(token != null){
-        httpHeaders = httpHeaders.append('Authorization', 'Bearer' + token);
-      }
-
-      const req = new HttpRequest('POST', `${this.urlEndPoint}/upload`, formData, {
-        reportProgress: true,
-        headers: httpHeaders
-      });
-
-      return this.http.request(req).pipe(
-        catchError(e=>{
-          this.isNoAutorizado(e);
-
+    eliminarCategoria(id: number): Observable<Categoria>{
+      return this.http.delete<Categoria>(` ${this.urlEndPoint}/categorias/${id}`, {headers: this.agregarAuthorizationHeader()}).pipe(
+        catchError(e=> {
+  
+          if(this.isNoAutorizado(e)){
+            return throwError(()=>e);
+          }
+  
+          console.error(e.error.mensaje);
+          swal('Error al eliminar', e.error.mensaje, 'error');
           return throwError(()=>e);
         })
-      );  //retorna un httpRquest con el progreso
-      
+      )
     }
-    */
 
 }

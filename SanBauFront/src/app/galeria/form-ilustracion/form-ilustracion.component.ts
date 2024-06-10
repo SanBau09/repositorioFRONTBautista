@@ -91,33 +91,29 @@ export class FormIlustracionComponent implements OnInit{
     }
   }
 
+  eliminarCategoria(): void {
+    if(this.categoriaSeleccionada){
+      this.galeriaService.eliminarCategoria(this.categoriaSeleccionada.id).subscribe(
+        response => {
+          this.categorias = this.categorias.filter(cat => cat !== this.categoriaSeleccionada);
+          
+          swal(
+            'Categoría Eliminada!',
+            `Categoría ${this.categoriaSeleccionada.nombre} eliminada con éxito`,
+            'success');
+  
+            this.categoriaSeleccionada = null;
+      });
+    }else{
+      swal('Error','Seleccione una categoría para eliminar' , 'error');
+    }
+    
+  }
+  
+
   mostrarPDialogCategoria(): void{
     this.displayActivationDialog = true; // Mostrar el diálogo
     this.nuevaCategoria = new Categoria();
   }
-/*
-  subirFoto(){ //nos aseguramos que el archivo sea de tipo imagen
-    if(!this.fotoSeleccionada){
-      swal('Error Upload: ', 'Debe seleccionar una foto', 'error');
-    }else{
-      this.clienteService.subirFoto(this.fotoSeleccionada, this.cliente.id)
-      .subscribe(event =>{
-        if(event.type === HttpEventType.UploadProgress){
-          this.progreso = Math.round((event.loaded/event.total)*100);
-        }else if(event.type === HttpEventType.Response){
-          let response:any = event.body;
-          this.cliente = response.cliente as Cliente;
 
-          this.modalService.notificarUpload.emit(this.cliente);
-
-          swal('La foto se ha subido correctamente!', response.mensaje, 'success');
-        }
-
-
-        //this.cliente = cliente;
-       
-      });
-    }
-  }
-  */
 }
