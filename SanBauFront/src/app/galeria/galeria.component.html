@@ -61,7 +61,7 @@
 <div *ngIf="displayImageModal" class="modal-backdrop fade show"></div>
 
 <!--Ventana al formulario de editar ilustracion-->
-<p-dialog [(visible)]="displayActivationDialog" [modal]="true" [closable]="true" [baseZIndex]="1000" [style]="{width: '60vw',height:'80vh'}">
+<p-dialog [(visible)]="displayActivationDialog" [modal]="true" [closable]="true" [baseZIndex]="1000" [style]="{width: '60vw',height:'85vh'}">
   <ng-template pTemplate="header">
       <h3>Editar Ilustración</h3>
   </ng-template>
@@ -99,7 +99,7 @@
   
           <!-- Columna Derecha: Imagen -->
           <div class="col-md-6 text-center">
-              <img *ngIf="ilustracionAEditar?.imagen" src="http://localhost:8080/api/uploads/img/{{ilustracionAEditar.imagen}}" alt="{{ilustracionAEditar.imagen}}" class="img-thumbnail rounded" style="width: 150px; height: 150px;">
+              <img *ngIf="ilustracionAEditar?.imagen" src="http://localhost:8080/api/uploads/img/{{ilustracionAEditar.imagen}}" alt="{{ilustracionAEditar.imagen}}" class="img-thumbnail rounded small">
           </div>
         </div>
   
@@ -122,7 +122,7 @@
   
         <!-- Botón de Guardar -->
         <div class="form-group mt-5 text-center">
-            <button class="btn btn-primary" (click)="editarIlustracion()">Guardar</button>
+            <button class="btn btn-crear" (click)="editarIlustracion()">Guardar</button>
         </div>
       </form>
   </ng-template>
