@@ -16,6 +16,7 @@ export class GaleriaComponent implements OnInit{
   ilustraciones: Ilustracion[];
   ilustracionesFiltradas: Ilustracion[];
   ilustracionAEditar: Ilustracion;
+  ilustracionAEditarOriginal: Ilustracion; // Añadir una copia de la ilustración
   categorias: Categoria[];
 
   displayActivationDialog: boolean = false;     // Variable para controlar la visibilidad del diálogo de editar ilustración
@@ -159,8 +160,14 @@ export class GaleriaComponent implements OnInit{
 
   mostrarPDialogEditarIlustracion(ilustracion): void{
     this.displayActivationDialog = true; // Mostrar el diálogo
-    this.ilustracionAEditar = ilustracion;
+    this.ilustracionAEditarOriginal = { ...ilustracion, categorias: [...ilustracion.categorias] }; // Guardar el estado original con una copia profunda de las categorías
+    this.ilustracionAEditar = { ...ilustracion, categorias: [...ilustracion.categorias] }; // Crear una copia del objeto ilustración
     this.progreso = 0;
+  }
+
+  cancelarEdicion(): void {
+    Object.assign(this.ilustracionAEditar, this.ilustracionAEditarOriginal); // Revertir los cambios
+    this.displayActivationDialog = false;
   }
 
   // Método para mostrar la imagen en tamaño completo

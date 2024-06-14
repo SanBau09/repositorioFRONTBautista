@@ -67,7 +67,7 @@
   </ng-template>
   <ng-template pTemplate="content">
       <!-- Contenido del diálogo aquí -->
-      <form #ilustracionForm="ngForm">
+      <form #ilustracionForm="ngForm" (ngSubmit)="editarIlustracion()">
         <div class="row">
           <!-- Columna Izquierda: Inputs -->
           <div class="col-md-6">
@@ -119,11 +119,13 @@
                 </div>
             </div>
         </div>
-  
-        <!-- Botón de Guardar -->
         <div class="form-group mt-5 text-center">
-            <button class="btn btn-crear" (click)="editarIlustracion()">Guardar</button>
+          <button class="btn btn-crear" type="submit" [disabled]="ilustracionForm.invalid">Guardar</button>
         </div>
+
+        <ng-template pTemplate="footer">
+          <button type="button" pButton icon="pi pi-times" label="Cancelar" class="ui-button-secondary" (click)="cancelarEdicion()"></button>
+        </ng-template>
       </form>
   </ng-template>
 </p-dialog>
