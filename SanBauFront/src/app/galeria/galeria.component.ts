@@ -42,6 +42,10 @@ export class GaleriaComponent implements OnInit{
     
   }
 
+  /**
+ * Obtiene las ilustraciones desde el servicio y las almacena en las variables locales.
+ * Inicialmente, muestra todas las ilustraciones.
+ */
   obtenerIlustraciones(): void {
     this.galeriaService.getIlustraciones().subscribe(
       (ilustraciones: Ilustracion[]) => {
@@ -53,7 +57,9 @@ export class GaleriaComponent implements OnInit{
       }
     );
   }
-
+  /**
+   * Obtiene las categorías desde el servicio y filtra solo aquellas que pertenecen a la galería.
+   */
   obtenerCategorias(): void {
     this.galeriaService.getCategorias().subscribe(
       (categorias: Categoria[]) => {
@@ -65,6 +71,13 @@ export class GaleriaComponent implements OnInit{
     );
   }
 
+  /**
+ * Compara dos objetos de tipo Categoria por su ID.
+ * 
+ *  o1 Primera categoría a comparar.
+ *  o2 Segunda categoría a comparar.
+ *  true si ambas categorías tienen el mismo ID o ambas son indefinidas; false en caso contrario.
+ */
   compararCategoria(o1: Categoria, o2:Categoria): boolean{
     if(o1 === undefined && o2 === undefined){
       return true;
@@ -74,8 +87,11 @@ export class GaleriaComponent implements OnInit{
   }
 
 
-
-
+/**
+ * Filtra las ilustraciones por una categoría específica.
+ * 
+ *  categoriaId El ID de la categoría por la cual se desea filtrar las ilustraciones.
+ */
   filtrarPorCategoria(categoriaId: string): void {
     if (categoriaId === '') {
       this.ilustracionesFiltradas= this.ilustraciones;
@@ -84,6 +100,11 @@ export class GaleriaComponent implements OnInit{
     }
   }
 
+  /**
+   * Elimina una ilustración después de confirmar la acción mediante un cuadro de diálogo.
+   * 
+   * ilustracion La ilustración que se desea eliminar.
+   */
   eliminarIlustracion(ilustracion: Ilustracion) : void {
     swal({
       title: "Estás seguro?",
@@ -110,6 +131,9 @@ export class GaleriaComponent implements OnInit{
     });
   }
 
+  /**
+   * Edita una ilustración y actualiza la lista de ilustraciones.
+   */
   editarIlustracion(): void{
     this.galeriaService.editarIlustracion(this.ilustracionAEditar).subscribe({
       next:
@@ -125,6 +149,11 @@ export class GaleriaComponent implements OnInit{
     });
   }
 
+  /**
+   * Selecciona una foto para subirla, asegurándose de que sea de tipo imagen.
+   * 
+   * event El evento de selección de archivo.
+   */
   seleccionarFoto(event){  //nos aseguramos que el archivo sea de tipo imagen
     this.fotoSeleccionada = event.target.files[0];
     this.progreso = 0;
@@ -137,6 +166,9 @@ export class GaleriaComponent implements OnInit{
     }
   }
 
+  /**
+   * Sube la foto seleccionada y actualiza la lista de ilustraciones.
+   */
   subirFoto(){ //nos aseguramos que el archivo sea de tipo imagen
     if(!this.fotoSeleccionada){
       swal('Error Upload: ', 'Debe seleccionar una foto', 'error');
@@ -157,7 +189,11 @@ export class GaleriaComponent implements OnInit{
     }
   }
 
-
+  /**
+   * Muestra el cuadro de diálogo para editar una ilustración.
+   * 
+   * ilustracion La ilustración que se desea editar.
+   */
   mostrarPDialogEditarIlustracion(ilustracion): void{
     this.displayActivationDialog = true; // Mostrar el diálogo
     this.ilustracionAEditarOriginal = { ...ilustracion, categorias: [...ilustracion.categorias] }; // Guardar el estado original con una copia profunda de las categorías
@@ -165,18 +201,27 @@ export class GaleriaComponent implements OnInit{
     this.progreso = 0;
   }
 
+  /**
+   * Cancela la edición de una ilustración y revierte los cambios realizados.
+   */
   cancelarEdicion(): void {
     Object.assign(this.ilustracionAEditar, this.ilustracionAEditarOriginal); // Revertir los cambios
     this.displayActivationDialog = false;
   }
 
-  // Método para mostrar la imagen en tamaño completo
+  /**
+   * Muestra una imagen en tamaño completo en un modal.
+   * 
+   * ilustracion La ilustración cuya imagen se desea mostrar en tamaño completo.
+   */
   mostrarImagenModal(ilustracion: Ilustracion): void {
     this.modalImagenSeleccionada = ilustracion;
     this.displayImageModal = true;
   }
 
-  // Método para cerrar el modal de imagen en tamaño completo
+  /**
+   * Cierra el modal de imagen en tamaño completo.
+   */
   cerrarModalImagen(): void {
     this.displayImageModal = false;
     this.modalImagenSeleccionada = null;

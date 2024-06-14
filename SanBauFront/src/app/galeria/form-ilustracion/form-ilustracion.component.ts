@@ -27,10 +27,17 @@ export class FormIlustracionComponent implements OnInit{
 
   constructor(private galeriaService: GaleriaService, private router: Router, private activatedRoute: ActivatedRoute){}
 
+    /**
+   * Inicializa el componente cargando las categorías disponibles filtradas para la galería.
+   */
   ngOnInit(){
     this.galeriaService.getCategorias().subscribe(categorias => this.categorias = categorias.filter(categoria => categoria.esGaleria));  // Filtrar categorías);
   }
 
+    /**
+   * Maneja la selección de una foto, asegurándose de que sea de tipo imagen.
+   * event - Evento de selección de archivo.
+   */
   seleccionarFoto(event){  //nos aseguramos que el archivo sea de tipo imagen
     this.fotoSeleccionada = event.target.files[0];
     this.progreso = 0;
@@ -43,7 +50,12 @@ export class FormIlustracionComponent implements OnInit{
     }
   }
 
-
+  /**
+   * Compara dos categorías para verificar si son iguales.
+   * o1 - Primera categoría a comparar.
+   * o2 - Segunda categoría a comparar.
+   * true si las categorías son iguales, false en caso contrario.
+   */
   compararCategoria(o1: Categoria, o2:Categoria): boolean{
     if(o1 === undefined && o2 === undefined){
       return true;
@@ -52,7 +64,9 @@ export class FormIlustracionComponent implements OnInit{
     return o1 == null || o2 == null? false: o1.id == o2.id;
   }
 
-
+  /**
+   * Crea una nueva ilustración si se ha seleccionado una foto.
+   */
   create(): void{
 
     if(!this.fotoSeleccionada){
@@ -72,6 +86,9 @@ export class FormIlustracionComponent implements OnInit{
     }
   }
 
+  /**
+   * Crea una nueva categoría si no existe una con el mismo nombre.
+   */
   createCategoria(): void{
     if(this.categorias.find(x => x.nombre.toLocaleLowerCase() == this.nuevaCategoria.nombre.toLocaleLowerCase())){
       swal('Categoria Existente', `La categoría ${this.nuevaCategoria.nombre} ya existe!`, 'error');
@@ -91,6 +108,9 @@ export class FormIlustracionComponent implements OnInit{
     }
   }
 
+  /**
+   * Elimina la categoría seleccionada si hay una categoría seleccionada.
+   */
   eliminarCategoria(): void {
     if(this.categoriaSeleccionada){
       this.galeriaService.eliminarCategoria(this.categoriaSeleccionada.id).subscribe(
@@ -110,7 +130,9 @@ export class FormIlustracionComponent implements OnInit{
     
   }
   
-
+  /**
+   * Muestra el diálogo para crear una nueva categoría y reinicia la variable nuevaCategoria.
+   */
   mostrarPDialogCategoria(): void{
     this.displayActivationDialog = true; // Mostrar el diálogo
     this.nuevaCategoria = new Categoria();

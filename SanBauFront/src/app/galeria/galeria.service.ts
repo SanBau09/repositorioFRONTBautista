@@ -15,6 +15,11 @@ export class GaleriaService{
 
     constructor(private http: HttpClient, private router: Router, private authService: AuthService) { }
 
+    /**
+   * Agrega el encabezado de autorización a la solicitud HTTP si el token está disponible.
+   * 
+   * HttpHeaders con el encabezado de autorización añadido si el token existe; de lo contrario, devuelve los encabezados originales.
+   */
     private agregarAuthorizationHeader(){
       let token = this.authService.token;
   
@@ -24,6 +29,12 @@ export class GaleriaService{
       return this.httpHeaders;
     }
   
+    /**
+   * Verifica si la respuesta HTTP indica que el usuario no está autorizado.
+   * 
+   * e El error de respuesta HTTP.
+   * true si el usuario no está autorizado (401 o 403); false en caso contrario.
+   */
     private isNoAutorizado(e): boolean{
       if(e.status == 401){
         if(this.authService.isAuthenticated()){
@@ -42,7 +53,13 @@ export class GaleriaService{
       return false;
     }
 
-
+    /**
+   * Crea una nueva ilustración y sube un archivo asociado.
+   * 
+   * ilustracion La ilustración a crear.
+   * archivo El archivo asociado a la ilustración.
+   * Observable<Ilustracion> con la ilustración creada.
+   */
     create(ilustracion: Ilustracion, archivo: File) : Observable<Ilustracion> {
 
       let formData = new FormData();
@@ -75,6 +92,11 @@ export class GaleriaService{
       );
     }
 
+    /**
+   * Obtiene todas las ilustraciones desde el servicio.
+   * 
+   * Observable<any> con la lista de ilustraciones.
+   */
     getIlustraciones(): Observable<any>{
       return this.http.get(this.urlEndPoint + "/ilustraciones").pipe(
         tap( (response : any) =>{
@@ -86,6 +108,12 @@ export class GaleriaService{
       );
     }
 
+    /**
+     * Edita una ilustración existente.
+     * 
+     * ilustracion La ilustración a editar.
+     * Observable<any> con la respuesta del servidor.
+     */
     editarIlustracion(ilustracion: Ilustracion): Observable<any>{
       return this.http.put<any>(` ${this.urlEndPoint}/ilustraciones/${ilustracion.id}`, ilustracion, {headers: this.agregarAuthorizationHeader()}).pipe(
         catchError(e=> {
@@ -104,6 +132,13 @@ export class GaleriaService{
       )
     }
 
+    /**
+   * Sube una foto asociada a una ilustración.
+   * 
+   * archivo El archivo de la foto a subir.
+   * id El ID de la ilustración asociada.
+   * Observable<HttpEvent<{}>> con el progreso de la carga.
+   */
     subirFoto(archivo: File, id): Observable<HttpEvent<{}>>{
       let formData = new FormData();
       formData.append("archivo", archivo);
@@ -131,6 +166,12 @@ export class GaleriaService{
        
     }
 
+    /**
+   * Elimina una ilustración por su ID.
+   * 
+   * id El ID de la ilustración a eliminar.
+   * Observable<Ilustracion> con la ilustración eliminada.
+   */
     eliminarIlustracion(id: number): Observable<Ilustracion>{
       return this.http.delete<Ilustracion>(` ${this.urlEndPoint}/ilustraciones/${id}`, {headers: this.agregarAuthorizationHeader()}).pipe(
         catchError(e=> {
@@ -146,7 +187,11 @@ export class GaleriaService{
       )
     }
 
-
+    /**
+     * Obtiene todas las categorías desde el servicio.
+     * 
+     * Observable<Categoria[]> con la lista de categorías.
+     */
     getCategorias(): Observable<Categoria[]>{
       return this.http.get<Categoria[]>(this.urlEndPoint + '/categorias', {headers: this.agregarAuthorizationHeader()}).pipe(
         catchError(e=>{
@@ -157,6 +202,12 @@ export class GaleriaService{
       );
     }
 
+    /**
+   * Crea una nueva categoría.
+   * 
+   * categoria La categoría a crear.
+   * Observable<Categoria> con la categoría creada.
+   */
     createCategoria(categoria: Categoria) : Observable<Categoria> {
       return this.http.post(this.urlEndPoint + "/categorias", categoria, {headers:this.agregarAuthorizationHeader()}).pipe(
         map( (response : any) => response.categoria as Categoria),
@@ -177,6 +228,12 @@ export class GaleriaService{
       );
     }
 
+    /**
+   * Elimina una categoría por su ID.
+   * 
+   * id El ID de la categoría a eliminar.
+   * Observable<Categoria> con la categoría eliminada.
+   */
     eliminarCategoria(id: number): Observable<Categoria>{
       return this.http.delete<Categoria>(` ${this.urlEndPoint}/categorias/${id}`, {headers: this.agregarAuthorizationHeader()}).pipe(
         catchError(e=> {
