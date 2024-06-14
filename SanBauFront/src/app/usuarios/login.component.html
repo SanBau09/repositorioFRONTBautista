@@ -1,36 +1,35 @@
 <div class="m-5 d-flex justify-content-center align-items-center min-vh-100">
-    <div class="card bg-dark text-white border-secondary text-center box" style="width: 30vw;  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8); overflow: hidden;">
+    <div class="card bg-dark text-white border-secondary text-center box w-100" style="max-width: 400px; box-shadow: 0 0 30px rgba(0, 0, 0, 0.8); overflow: hidden;">
         <div class="card-header">{{titulo}}</div>
-        <div class="card-body ">
+        <div class="card-body">
             <form method="post">
-                <div class="form-group row  mb-3 justify-content-center">
+                <div class="form-group row mb-3 justify-content-center">
                     <label for="username" class="col-form-label col-sm-2"><i class="fas fa-user"></i></label>
-                    <div class="col-sm-6">
+                    <div class="col-sm-8">
                         <input class="form-control" [(ngModel)]="usuario.username" type="text" name="username" id="username" placeholder="Username" autofocus required>
-                    </div>   
+                    </div>
                 </div>
-    
+
                 <div class="form-group row mb-3 justify-content-center">
                     <label for="password" class="col-form-label col-sm-2"><i class="fas fa-lock"></i></label>
-                    <div class="col-sm-6">
+                    <div class="col-sm-8">
                         <input class="form-control" [(ngModel)]="usuario.password" type="password" name="password" id="password" placeholder="Password" required>
                     </div>
                 </div>
-    
+
                 <hr class="bg-secondary">
-    
+
                 <div class="form-group mb-3">
                     <p class="text-white">
                         ¿No tienes cuenta? 
-                        <a routerLink="/usuarios/form-registro" class="text-primary">Regístrate aquí</a>
+                        <a class="a-registro text-primary" routerLink="/usuarios/form-registro">Regístrate aquí</a>
                     </p>
                 </div>
-    
-                <div class="form-group  mb-3">
+
+                <div class="form-group mb-3">
                     <input class="btn btn-lg btn-login btn-block rounded" (click)="login()" type="submit" value="Login">
                 </div>
             </form>
         </div>
     </div>
 </div>
-
