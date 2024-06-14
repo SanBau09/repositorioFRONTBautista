@@ -30,6 +30,9 @@ export class HeaderComponent implements OnInit, OnDestroy{
     });
   }
 
+  /**
+   * Inicializa el componente y suscribe a cambios en el carrito.
+   */
   ngOnInit(): void {
     // Inicializar el carrito desde el servicio
     this.carrito = this.tiendaService.listaCarrito;
@@ -42,12 +45,18 @@ export class HeaderComponent implements OnInit, OnDestroy{
     });
   }
 
+  /**
+   * Cancela la suscripción al carrito cuando el componente se destruye.
+   */
   ngOnDestroy(): void {
     if (this.carritoSubscription) {
       this.carritoSubscription.unsubscribe();
     }
   }
 
+  /**
+   * Cierra la sesión del usuario.
+   */
   logout():void{
     this.authService.logout();
 
@@ -55,6 +64,9 @@ export class HeaderComponent implements OnInit, OnDestroy{
     this.router.navigate(['/login']);
   }
 
+  /**
+   * Muestra el diálogo del carrito si hay artículos.
+   */
   irAlCarrito(): void{
     if(this.tiendaService.listaCarrito == null || this.tiendaService.listaCarrito.length == 0){
       swal('Carrito', 'Aún no se han agregado artículos al carrito', 'warning');
@@ -64,12 +76,19 @@ export class HeaderComponent implements OnInit, OnDestroy{
       this.displayCarritoDialog = true;
     }
   }
+
+  /**
+   * Calcula el total del carrito incluyendo los gastos de envío.
+   */
   calcularTotal(): void {
     const totalSinEnvio = this.carrito.reduce((sum, item) => sum + (item.articulo.precio * item.cantidad), 0);
     this.total = parseFloat((totalSinEnvio + this.gastosEnvio).toFixed(2));
     this.totalArticulos = this.carrito.reduce((sum, item) => sum + item.cantidad, 0);
   }
 
+  /**
+   * Realiza la compra de los artículos en el carrito.
+   */
   realizarCompra(): void {
     if(this.total > 0 && this.totalArticulos > 0){
       let venta = new Venta();
@@ -103,6 +122,10 @@ export class HeaderComponent implements OnInit, OnDestroy{
     }
   }
 
+    /**
+   * Obtiene los artículos únicos del carrito.
+   * returns {Articulo[]} Lista de artículos únicos.
+   */
   obtenerArticulosUnicosDelCarrito(): Articulo[] {
     const articulosMap = new Map<number, Articulo>();
     this.carrito.forEach(item => {
@@ -111,6 +134,10 @@ export class HeaderComponent implements OnInit, OnDestroy{
     return Array.from(articulosMap.values());
   }
 
+    /**
+   * Elimina un artículo del carrito.
+   * {ItemCompra} item - El artículo a eliminar.
+   */
   eliminarItem(item: ItemCompra) : void {
     swal({
       title: "Estás seguro?",
@@ -134,7 +161,9 @@ export class HeaderComponent implements OnInit, OnDestroy{
     });
   }
 
-  // Método para actualizar el total de artículos en el carrito
+  /**
+   * Actualiza el total de artículos en el carrito.
+   */
   actualizarTotalArticulos(): void {
     this.totalArticulos = this.carrito.reduce((sum, item) => sum + item.cantidad, 0);
   }
