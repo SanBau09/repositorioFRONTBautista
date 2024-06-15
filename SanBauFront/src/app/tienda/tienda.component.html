@@ -107,18 +107,18 @@
             
 
                 <div class="form-group row">
-                  <label for="formato" class="col-form-label col-sm-2">Formato</label>
+                  <label for="formato" class="col-form-label col-sm-4">Formato</label>
                   <div class="col-sm-6">
-                      <input type="text" class="form-control" [(ngModel)]="nuevoFormato.tamanio" name="formato" placeholder="Ingrese el formato (ej. XL para camisetas, 200x400 para ilustraciones)">
+                      <input type="text" class="form-control" [(ngModel)]="nuevoFormato.tamanio" name="formato" placeholder="Ingrese formato (ej. 200x400 para ilustraciones)">
                   </div>
                   <div class="col-sm-2">
-                      <button class="btn btn-crear" type="button" (click)="crearFormato()">Crear Formato</button>
+                      <button class="btn btn-crear" type="button" (click)="crearFormato()"><i class="fas fa-plus"></i></button>
                   </div>
                 </div>
 
                 <div *ngIf="formatos?.length > 0" class="form-group row">
-                    <label for="formatos" class="col-form-label col-sm-2">Formatos Disponibles</label>
-                    <div class="col-sm-10">
+                    <label for="formatos" class="col-form-label col-sm-4">Formatos Disponibles</label>
+                    <div class="col-sm-8">
                       <div class="d-flex flex-wrap">
                         <div *ngFor="let formato of formatos" class="field-checkbox mr-3 mb-3">
                           <p-checkbox name="formatos" value="formato" [value]="formato" [(ngModel)]="formatoSeleccionados" [inputId]="formato.id"></p-checkbox>
@@ -130,7 +130,7 @@
               </div>
               <!-- Columna Derecha: Imagen -->
               <div class="col-md-6 text-center">
-                  <img *ngIf="articuloAEditar?.imagen" src="http://localhost:8080/api/uploads/img/{{articuloAEditar.imagen}}" alt="{{articuloAEditar.imagen}}" class="img-thumbnail rounded" style="width: 150px; height: 150px;">
+                  <img *ngIf="articuloAEditar?.imagen" src="http://localhost:8080/api/uploads/img/{{articuloAEditar.imagen}}" alt="{{articuloAEditar.imagen}}" class="img-thumbnail rounded small">
               </div>
             </div>
 

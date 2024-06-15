@@ -30,7 +30,9 @@ export class FormArticuloComponent implements OnInit{
 
   progreso:number = 0;
 
-  constructor(private tiendaService: TiendaService, private galeriaService: GaleriaService, private router: Router, private activatedRoute: ActivatedRoute){}
+  constructor(private tiendaService: TiendaService, private galeriaService: GaleriaService, private router: Router, private activatedRoute: ActivatedRoute){
+
+  }
 
   ngOnInit(){
     this.galeriaService.getCategorias().subscribe(categorias => this.categorias = categorias.filter(categoria => !categoria.esGaleria));  // Filtrar categorías);
@@ -92,23 +94,50 @@ export class FormArticuloComponent implements OnInit{
     }
   }
 
+  /**
+   * Elimina la categoría seleccionada si hay una categoría seleccionada.
+   */
+  eliminarCategoria(): void {
+    if(this.categoriaSeleccionada){
+      this.galeriaService.eliminarCategoria(this.categoriaSeleccionada.id).subscribe(
+        response => {
+          this.categorias = this.categorias.filter(cat => cat !== this.categoriaSeleccionada);
+          
+          swal(
+            'Categoría Eliminada!',
+            `Categoría ${this.categoriaSeleccionada.nombre} eliminada con éxito`,
+            'success');
+  
+            this.categoriaSeleccionada = null;
+      });
+    }else{
+      swal('Error','Seleccione una categoría para eliminar' , 'error');
+    }
+    
+  }
+
   crearFormato(): void {
        
-    if(this.formatos.find(x => x.tamanio.toLocaleLowerCase() == this.nuevoFormato.tamanio.toLocaleLowerCase())){
-      swal('Formato Existente', `El formato ${this.nuevoFormato.tamanio} ya existe!`, 'error');
-    } else{
-      this.tiendaService.crearFormato(this.nuevoFormato).subscribe(
-        (formato: Formato) => {
-          this.formatos.push(formato);
-          swal('Formato Creado', `Formato ${formato.tamanio} creado con éxito!`, 'success');
-          this.nuevoFormato = new Formato();
-        },
-        error => {
-          this.errores = error.error.errors as string[];
-          console.error('Error al crear formato:', error);
-        }
-      );
-    }
+    if (!this.nuevoFormato || !this.nuevoFormato.tamanio) {
+    swal('Error', 'Introduzca un formato', 'error');
+    return;
+  }
+
+  if (this.formatos.find(x => x.tamanio.toLocaleLowerCase() === this.nuevoFormato.tamanio.toLocaleLowerCase())) {
+    swal('Formato Existente', `El formato ${this.nuevoFormato.tamanio} ya existe!`, 'error');
+  } else {
+    this.tiendaService.crearFormato(this.nuevoFormato).subscribe(
+      (formato: Formato) => {
+        this.formatos.push(formato);
+        swal('Formato Creado', `Formato ${formato.tamanio} creado con éxito!`, 'success');
+        this.nuevoFormato = new Formato(); // Restablecer después de usarlo
+      },
+      error => {
+        this.errores = error.error.errors as string[];
+        console.error('Error al crear formato:', error);
+      }
+    );
+  }
   }
 
   mostrarPDialogCategoria(): void{

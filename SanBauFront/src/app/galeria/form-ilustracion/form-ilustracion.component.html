@@ -32,7 +32,7 @@
                     </select>
                 </div>
                 
-                <div class="col-sm-4 d-flex align-items-center">
+                <div class="ml-2 mt-2 mt-sm-0">
                     <!--boton añadir categoria-->
                     <button class="btn btn-crear" type="button" id="inputGroupFileAddon04" (click)="mostrarPDialogCategoria()"><i class="fas fa-plus"></i></button> 
   
@@ -63,7 +63,7 @@
 </div>
 
 <!--Ventana al formulario de crear categoria-->
-<p-dialog [(visible)]="displayActivationDialog" [modal]="true" [closable]="true" [style]="{width: '60vw',height:'40vh'}">
+<p-dialog [(visible)]="displayActivationDialog" [modal]="true" [closable]="true"  [style]="{'width': '90%', 'max-width': '40rem', 'height': 'auto', 'max-height': '80vh'}">
     <ng-template pTemplate="header">
         <h3>Crear nueva Categoría</h3>
     </ng-template>
@@ -74,7 +74,7 @@
             <input type="text" id="nombreCategoria" class="form-control" [(ngModel)]="nuevaCategoria.nombre" name="nombreCategoria">
           </div>
           
-          <div class="form-group">
+          <div class="form-group text-right">
             <button class="btn btn-crear" (click)="createCategoria()">Guardar</button>
           </div>
     </ng-template>

@@ -1,0 +1,15 @@
+@media (max-width: 576px) {
+    .form-group.row .col-sm-6 {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .form-group.row .col-sm-6 .d-flex.align-items-center {
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+  
+    .form-group.row .col-sm-6 .d-flex.align-items-center button {
+      margin-top: 5px; /* Espacio entre los botones */
+    }
+  }

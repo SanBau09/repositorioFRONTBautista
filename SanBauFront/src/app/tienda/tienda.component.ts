@@ -78,6 +78,30 @@ export class TiendaComponent implements OnInit {
     );
   }
 
+  crearFormato(): void {
+       
+    if (!this.nuevoFormato || !this.nuevoFormato.tamanio) {
+    swal('Error', 'Introduzca un formato', 'error');
+    return;
+  }
+
+  if (this.formatos.find(x => x.tamanio.toLocaleLowerCase() === this.nuevoFormato.tamanio.toLocaleLowerCase())) {
+    swal('Formato Existente', `El formato ${this.nuevoFormato.tamanio} ya existe!`, 'error');
+  } else {
+    this.tiendaService.crearFormato(this.nuevoFormato).subscribe(
+      (formato: Formato) => {
+        this.formatos.push(formato);
+        swal('Formato Creado', `Formato ${formato.tamanio} creado con éxito!`, 'success');
+        this.nuevoFormato = new Formato(); // Restablecer después de usarlo
+      },
+      error => {
+        this.errores = error.error.errors as string[];
+        console.error('Error al crear formato:', error);
+      }
+    );
+  }
+  }
+
   compararCategoria(o1: Categoria, o2:Categoria): boolean{
     if(o1 === undefined && o2 === undefined){
       return true;

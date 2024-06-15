@@ -54,7 +54,7 @@
 
             <div class="form-group row">
                 <label for="categoria" class="col-form-label col-sm-2">Categoría</label>
-                <div class="col-sm-8">
+                <div class="col-sm-6">
                     <select [compareWith]="compararCategoria" class="form-control" [(ngModel)]="categoriaSeleccionada" name="categoria" ><!-- required -->
                         <option [ngValue]="undefined">--- selecciona una categoría ---</option>
                         <option *ngFor="let categoria of categorias" [ngValue]="categoria">{{categoria.nombre}}</option>
@@ -62,8 +62,12 @@
 
                     
                 </div>
-                <div class="col-sm-2">
-                    <button class="btn btn-crear" type="button" id="inputGroupFileAddon04" (click)="mostrarPDialogCategoria()"><i class="fas fa-plus"></i> Categoría</button> 
+                <div class="ml-2 mt-2 mt-sm-0">
+                    <!--boton añadir categoria-->
+                    <button class="btn btn-crear" type="button" id="inputGroupFileAddon04" (click)="mostrarPDialogCategoria()"><i class="fas fa-plus"></i></button> 
+  
+                    <!--boton eliminar categoria-->
+                    <button class="btn btn-eliminar ml-2" type="button" id="inputGroupFileAddon04" (click)="eliminarCategoria()"><i class="fas fa-trash"></i></button> 
                 </div>
             </div>
 
@@ -73,8 +77,8 @@
                 <div class="col-sm-6">
                     <input type="text" class="form-control" [(ngModel)]="nuevoFormato.tamanio" name="formato" placeholder="Ingrese el formato (ej. XL para camisetas, 200x400 para ilustraciones)">
                 </div>
-                <div class="col-sm-2">
-                    <button class="btn btn-crear" type="button" (click)="crearFormato()">Crear Formato</button>
+                <div class="ml-2 mt-2 mt-sm-0">
+                    <button class="btn btn-crear" type="button" (click)="crearFormato()"><i class="fas fa-plus"></i></button>
                 </div>
             </div>
 
@@ -110,7 +114,7 @@
 </div>
 
 <!--Ventana al formulario de crear categoria-->
-<p-dialog [(visible)]="displayActivationDialog" [modal]="true" [closable]="true" [style]="{width: '60vw',height:'40vh'}">
+<p-dialog [(visible)]="displayActivationDialog" [modal]="true" [closable]="true"[style]="{'width': '90%', 'max-width': '40rem', 'height': 'auto', 'max-height': '80vh'}">
     <ng-template pTemplate="header">
         <h3>Crear nueva Categoría</h3>
     </ng-template>
@@ -120,7 +124,7 @@
             <label for="nombreCategoria">Nombre de la Categoría</label>
             <input type="text" id="nombreCategoria" class="form-control" [(ngModel)]="nuevaCategoria.nombre" name="nombreCategoria">
           </div>
-          <div class="form-group">
+          <div class="form-group text-right">
             <button class="btn btn-crear" (click)="createCategoria()">Guardar</button>
           </div>
     </ng-template>
