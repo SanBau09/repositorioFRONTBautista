@@ -7,7 +7,6 @@
         <tr >          
             <th style="text-align: center; vertical-align: middle;">Pedido</th>
             <th style="text-align: center; vertical-align: middle;">Fecha Pedido</th>
-            <th style="text-align: center; vertical-align: middle;">Número Artículos Pedido</th>
             <th style="text-align: center; vertical-align: middle;">Precio Total</th>
         </tr>
     </ng-template>
@@ -15,7 +14,6 @@
         <tr>          
             <td style="text-align: center; vertical-align: middle;">{{item.id}}</td>
             <td style="text-align: center; vertical-align: middle;">{{item.fechaVenta | date:'shortDate'}}</td>
-            <td style="text-align: center; vertical-align: middle;">{{item.articulos.length}}</td>
             <td style="text-align: center; vertical-align: middle;">{{item.precioTotal}} €</td>          
         </tr>
     </ng-template>
