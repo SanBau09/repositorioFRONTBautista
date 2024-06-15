@@ -50,8 +50,9 @@ export class HeaderComponent implements OnInit, OnDestroy{
    */
   ngOnDestroy(): void {
     if (this.carritoSubscription) {
-      this.carritoSubscription.unsubscribe();
+      this.carritoSubscription.unsubscribe();      
     }
+    this.resetearCarrito();
   }
 
   /**
@@ -59,6 +60,8 @@ export class HeaderComponent implements OnInit, OnDestroy{
    */
   logout():void{
     this.authService.logout();
+    
+    this.resetearCarrito();
 
     swal('Logout', 'Has cerrado tu sesión', 'success');
     this.router.navigate(['/login']);
@@ -166,5 +169,12 @@ export class HeaderComponent implements OnInit, OnDestroy{
    */
   actualizarTotalArticulos(): void {
     this.totalArticulos = this.carrito.reduce((sum, item) => sum + item.cantidad, 0);
+  }
+
+  resetearCarrito(): void{
+    this.tiendaService.vaciarCarrito();
+    this.carrito = [];
+    this.total = 0;
+    this.totalArticulos = 0;
   }
 }

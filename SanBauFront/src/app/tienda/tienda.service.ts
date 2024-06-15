@@ -249,4 +249,19 @@ export class TiendaService {
     );
   }
 
+  eliminarFormato(id: number): Observable<Formato>{
+    return this.http.delete<Formato>(` ${this.urlEndPoint}/formatos/${id}`, {headers: this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=> {
+
+        if(this.isNoAutorizado(e)){
+          return throwError(()=>e);
+        }
+
+        console.error(e.error.mensaje);
+        swal('Error al eliminar', e.error.mensaje, 'error');
+        return throwError(()=>e);
+      })
+    )
+  }
+
 }

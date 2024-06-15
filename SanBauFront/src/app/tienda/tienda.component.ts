@@ -4,6 +4,7 @@ import { TiendaService } from './tienda.service';
 import { Articulo } from './articulo';
 import { Categoria } from '../galeria/categoria';
 import { GaleriaService } from '../galeria/galeria.service';
+import { Router } from '@angular/router';
 import swal from 'sweetalert2';
 import { HttpEventType } from '@angular/common/http';
 import { Formato } from './formato';
@@ -31,11 +32,13 @@ export class TiendaComponent implements OnInit {
   articuloSeleccionado: Articulo;
   formatoSeleccionados: Formato[] = [];
   formatoSeleccionado: Formato ;
+  formatosSeleccionadosABorrar: Formato[] = [];
   nuevoFormato: Formato = new Formato(); // Nuevo formato a crear
   displayDetallesDialog: boolean = false; 
+  displayBorrarFormatoDialog: boolean = false;
  
 
-  constructor(private galeriaService: GaleriaService, private tiendaService: TiendaService, public authService: AuthService){}
+  constructor(private galeriaService: GaleriaService, private tiendaService: TiendaService, public authService: AuthService, public router: Router){}
 
   ngOnInit(): void {
     this.obtenerArticulos();
@@ -78,28 +81,51 @@ export class TiendaComponent implements OnInit {
     );
   }
 
-  crearFormato(): void {
+   crearFormato(): void {
        
     if (!this.nuevoFormato || !this.nuevoFormato.tamanio) {
     swal('Error', 'Introduzca un formato', 'error');
     return;
+    }
+
+    if (this.formatos.find(x => x.tamanio.toLocaleLowerCase() === this.nuevoFormato.tamanio.toLocaleLowerCase())) {
+      swal('Formato Existente', `El formato ${this.nuevoFormato.tamanio} ya existe!`, 'error');
+    } else {
+      this.tiendaService.crearFormato(this.nuevoFormato).subscribe(
+        (formato: Formato) => {
+          this.formatos.push(formato);
+          swal('Formato Creado', `Formato ${formato.tamanio} creado con éxito!`, 'success');
+          this.nuevoFormato = new Formato(); // Restablecer después de usarlo
+        },
+        error => {
+          this.errores = error.error.errors as string[];
+          console.error('Error al crear formato:', error);
+        }
+      );
+    }
   }
 
-  if (this.formatos.find(x => x.tamanio.toLocaleLowerCase() === this.nuevoFormato.tamanio.toLocaleLowerCase())) {
-    swal('Formato Existente', `El formato ${this.nuevoFormato.tamanio} ya existe!`, 'error');
-  } else {
-    this.tiendaService.crearFormato(this.nuevoFormato).subscribe(
-      (formato: Formato) => {
-        this.formatos.push(formato);
-        swal('Formato Creado', `Formato ${formato.tamanio} creado con éxito!`, 'success');
-        this.nuevoFormato = new Formato(); // Restablecer después de usarlo
-      },
-      error => {
-        this.errores = error.error.errors as string[];
-        console.error('Error al crear formato:', error);
-      }
-    );
-  }
+  eliminarFormatos(): void{
+    if(this.formatosSeleccionadosABorrar){
+      this.formatosSeleccionadosABorrar.forEach( formato => {
+        this.tiendaService.eliminarFormato(formato.id).subscribe(
+          response => {
+            this.formatos = this.formatos.filter(form => form !== formato);
+            this.formatosSeleccionadosABorrar = this.formatosSeleccionadosABorrar.filter(form => form !== formato);
+            swal(
+              'Formato Eliminado!',
+              `Formato eliminado con éxito`,
+              'success');    
+        });
+      });
+    }else{
+      swal('Error','Seleccione al menos un formato para eliminar' , 'error');
+    }
+    
+  }  
+
+  mostrarPDialogFormato(): void{
+    this.displayBorrarFormatoDialog = true; // Mostrar el diálogo
   }
 
   compararCategoria(o1: Categoria, o2:Categoria): boolean{
@@ -209,15 +235,20 @@ export class TiendaComponent implements OnInit {
   }
 
   aniadirArticulo(articuloSeleccionado : Articulo, formatoSeleccionado : Formato, cantidad : number): void {
-    if(articuloSeleccionado && formatoSeleccionado){
-      let item = new ItemCompra();
-      item.articulo = articuloSeleccionado;
-      item.formato = formatoSeleccionado;
-      item.cantidad = cantidad;
-      this.tiendaService.agregarArticuloAlCarrito(item);
-      swal('Carrito',` Se ha añadido el artículo ${articuloSeleccionado.titulo} al carrito`, 'info');
-    }else{
-      swal('Carrito','Falta algún campo', 'error');
+    if (this.authService.isAuthenticated()){
+      if(articuloSeleccionado && formatoSeleccionado){
+        let item = new ItemCompra();
+        item.articulo = articuloSeleccionado;
+        item.formato = formatoSeleccionado;
+        item.cantidad = cantidad;
+        this.tiendaService.agregarArticuloAlCarrito(item);
+        swal('Carrito',` Se ha añadido el artículo ${articuloSeleccionado.titulo} al carrito`, 'info');
+      }else{
+        swal('Carrito','Falta algún campo', 'error');
+      }
+    } else{
+      swal('Carrito',`Necesita loguearse para poder agregar un artículo al carrito`, 'info');
+      this.router.navigate(['/login']);
     }
     
   }

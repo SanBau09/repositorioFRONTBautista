@@ -79,6 +79,7 @@
                 </div>
                 <div class="ml-2 mt-2 mt-sm-0">
                     <button class="btn btn-crear" type="button" (click)="crearFormato()"><i class="fas fa-plus"></i></button>
+                    <button class="btn btn-eliminar ml-2" type="button" (click)="mostrarPDialogFormato()"><i class="fas fa-trash"></i></button>
                 </div>
             </div>
 
@@ -129,3 +130,26 @@
           </div>
     </ng-template>
 </p-dialog>
+
+<p-dialog [(visible)]="displayBorrarFormatoDialog" [modal]="true" [closable]="true"[style]="{'width': '90%', 'max-width': '40rem', 'height': 'auto', 'max-height': '80vh'}">
+    <ng-template pTemplate="header">
+        <h3>Eliminar formato</h3>
+    </ng-template>
+    <ng-template pTemplate="content">
+        <!-- Contenido del diálogo aquí -->
+        <div *ngIf="formatos?.length > 0" class="form-group row">
+          <label for="formatos" class="col-form-label col-sm-4">Seleccione los formatos a eliminar</label>
+          <div class="col-sm-8">
+            <div class="d-flex flex-wrap">
+              <div *ngFor="let formato of formatos" class="field-checkbox mr-3 mb-3">
+                <p-checkbox name="formatos" value="formato" [value]="formato" [(ngModel)]="formatosSeleccionadosABorrar" [inputId]="formato.id"></p-checkbox>
+                  <label  class="form-check-label ml-1" [for]="formato.id">{{ formato.tamanio }}</label>
+              </div>
+            </div>
+          </div>
+      </div>
+        <div class="form-group text-right">
+          <button class="btn btn-crear" (click)="eliminarFormatos()">Eliminar</button>
+        </div>
+    </ng-template>
+  </p-dialog>
