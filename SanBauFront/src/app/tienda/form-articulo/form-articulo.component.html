@@ -25,7 +25,7 @@
             <div class="form-group row">
                 <label for="descripcion" class="col-form-label col-sm-2">Descripción</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="articulo.descripcion" name="descripcion" #descripcion="ngModel" required>
+                    <input type="text" class="form-control" [(ngModel)]="articulo.descripcion" name="descripcion" #descripcion="ngModel" required minlength="10" maxlength="200">
                     <div class="alert alert-danger" *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
                         <div *ngIf="descripcion.errors.required">
                             Descripción es requerido

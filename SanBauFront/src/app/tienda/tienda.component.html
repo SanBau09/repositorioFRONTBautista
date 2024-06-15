@@ -46,7 +46,7 @@
   </ng-template>
   <ng-template pTemplate="content">
       <!-- Contenido del diálogo aquí -->
-        <form #articuloForm="ngForm">
+        <form #articuloForm="ngForm" (ngSubmit)="editarArticulo()">
             <div class="row">
               <!-- Columna Izquierda: Inputs -->
               <div class="col-md-6">
@@ -154,8 +154,12 @@
 
             <!-- Botón de Guardar -->
             <div class="form-group mt-3 text-center">
-                <button class="btn btn-primary" (click)="editarArticulo()">Guardar</button>
+                <button  [disabled]="articuloForm.invalid" class="btn btn-crear" (click)="editarArticulo()">Guardar</button>
             </div>
+
+            <ng-template pTemplate="footer">
+              <button type="button" pButton icon="pi pi-times" label="Cancelar" class="ui-button-secondary" (click)="cancelarEdicion()"></button>
+            </ng-template>
         </form>
       
   </ng-template>
@@ -173,26 +177,42 @@
              alt="{{articuloSeleccionado.imagen}}" class="img-thumbnail rounded articulo-imagen">
       </div>
       <div class="col-md-6">
-        <h4>{{articuloSeleccionado?.titulo}}</h4>
+        <h4><strong>{{articuloSeleccionado?.titulo}}</strong></h4>
         <p>{{articuloSeleccionado?.descripcion}}</p>
-        <label for="cantidad" class="col-form-label col-sm-2">Cantidad</label>
-        <input type="number" class="form-control" [(ngModel)]="cantidadSeleccionada" name="cantidad" #cantidad="ngModel" required min="1">
-        <p><strong>Precio:</strong> {{articuloSeleccionado?.precio}} €</p>
-               
+        
+        <!-- Cantidad -->
+        <div class="form-group row mb-3">
+          <label for="cantidad" class="col-sm-4 col-form-label">Cantidad</label>
+          <div class="col-sm-8">
+            <input type="number" class="form-control" [(ngModel)]="cantidadSeleccionada" name="cantidad" #cantidad="ngModel" required min="1">
+          </div>
+        </div>
+
         <!-- Selector de tamaños -->
-        <div>
-          <label for="tamano">Seleccionar tamaño:</label>
-          <select id="tamano" class="form-control" [(ngModel)]="formatoSeleccionado">
-            <option *ngFor="let formato of articuloSeleccionado?.formatos" [ngValue]="formato">{{formato.tamanio}}</option>
-          </select>
+        <div class="form-group row mb-3">
+          <label for="tamano" class="col-sm-4 col-form-label">Seleccionar tamaño</label>
+          <div class="col-sm-8">
+            <select id="tamano" class="form-control" [(ngModel)]="formatoSeleccionado">
+              <option *ngFor="let formato of articuloSeleccionado?.formatos" [ngValue]="formato">{{formato.tamanio}}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Precio -->
+        <div class="form-group row mb-3">
+          <label class="col-sm-4"><strong>Precio:</strong></label>
+          <div class="col-sm-8 text-end">
+            <p class="form-control-plaintext">{{articuloSeleccionado?.precio}} €</p>
+          </div>
         </div>
       </div>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
-    <button class="btn btn-success" (click)="aniadirArticulo(articuloSeleccionado, formatoSeleccionado, cantidadSeleccionada)">Añadir al carrito</button>
+    <button class="btn btn-crear" (click)="aniadirArticulo(articuloSeleccionado, formatoSeleccionado, cantidadSeleccionada)">Añadir al carrito</button>
   </ng-template>
 </p-dialog>
+
 
 <!--Ventana para eliminar un formato-->
 <p-dialog [(visible)]="displayBorrarFormatoDialog" [modal]="true" [closable]="true"[style]="{'width': '90%', 'max-width': '40rem', 'height': 'auto', 'max-height': '80vh'}">

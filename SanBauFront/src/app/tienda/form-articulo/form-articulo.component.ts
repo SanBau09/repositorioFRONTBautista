@@ -66,7 +66,8 @@ export class FormArticuloComponent implements OnInit{
       this.tiendaService.create(this.articulo, this.fotoSeleccionada).subscribe({
         next:
           articulo => {
-            this.router.navigate(['/tienda/articulos'])
+            this.router.navigate(['/tienda/articulos']);
+            this.fotoSeleccionada = null;
             swal('Nuevo articulo', `El articulo ${articulo.titulo} ha sido creado con éxito`, 'success');},
           error:
             err => {

@@ -180,6 +180,7 @@ export class GaleriaComponent implements OnInit{
         }else if(event.type === HttpEventType.Response){
           let response:any = event.body;
           this.ilustracionAEditar = response.ilustracion as Ilustracion;
+          this.fotoSeleccionada = null;
           swal('La foto se ha subido correctamente!', response.mensaje, 'success');
 
           this.obtenerIlustraciones(); // Refrescar la lista de ilustraciones
@@ -199,6 +200,7 @@ export class GaleriaComponent implements OnInit{
     this.ilustracionAEditarOriginal = { ...ilustracion, categorias: [...ilustracion.categorias] }; // Guardar el estado original con una copia profunda de las categorías
     this.ilustracionAEditar = { ...ilustracion, categorias: [...ilustracion.categorias] }; // Crear una copia del objeto ilustración
     this.progreso = 0;
+    this.fotoSeleccionada = null;
   }
 
   /**

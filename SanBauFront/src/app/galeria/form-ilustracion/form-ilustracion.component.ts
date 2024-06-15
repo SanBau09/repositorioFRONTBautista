@@ -76,10 +76,11 @@ export class FormIlustracionComponent implements OnInit{
       this.galeriaService.create(this.ilustracion, this.fotoSeleccionada).subscribe({
         next:
           ilustracion => {
-            this.router.navigate(['/galeria/ilustraciones'])
+            this.router.navigate(['/galeria/ilustraciones']);
+            this.fotoSeleccionada = null;
             swal('Nueva ilustración', `La ilustración ${ilustracion.titulo} ha sido creada con éxito`, 'success');},
           error:
-            err => {
+            err => {              
               this.errores = err.error.errors as string[];
               console.error('Código del error desde el backend: ' + err.status);}
       });
@@ -136,6 +137,7 @@ export class FormIlustracionComponent implements OnInit{
   mostrarPDialogCategoria(): void{
     this.displayActivationDialog = true; // Mostrar el diálogo
     this.nuevaCategoria = new Categoria();
+    this.fotoSeleccionada = null;
   }
 
 }

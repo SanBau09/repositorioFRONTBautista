@@ -19,6 +19,7 @@ export class TiendaComponent implements OnInit {
   articulos: Articulo[];
   articulosFiltrados: Articulo[];
   articuloAEditar: Articulo;
+  articuloAEditarOriginal: Articulo; // Añadir una copia de la ilustración
   categorias: Categoria[];
   formatos: Formato[] = [];
 
@@ -43,7 +44,6 @@ export class TiendaComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerArticulos();
     this.obtenerCategorias();
-
     this.obtenerFormatos();
   }
 
@@ -183,6 +183,7 @@ export class TiendaComponent implements OnInit {
         }else if(event.type === HttpEventType.Response){
           let response:any = event.body;
           this.articuloAEditar = response.articulo as Articulo;
+          this.fotoSeleccionada = null;
           swal('La foto se ha subido correctamente!', response.mensaje, 'success');
 
           this.obtenerArticulos(); // Refrescar la lista de articulos
@@ -194,11 +195,19 @@ export class TiendaComponent implements OnInit {
 
   mostrarPDialogEditarArticulo(articulo): void{
     this.displayActivationDialog = true; // Mostrar el diálogo
-    this.articuloAEditar = articulo;
-
-    this.formatoSeleccionados = [];    
+    this.articuloAEditarOriginal = { ...articulo, categorias: [...articulo.categorias], formatos: [...articulo.formatos] }; // Guardar el estado original con una copia profunda de las categorías
+    this.articuloAEditar = { ...articulo, categorias: [...articulo.categorias] }; // Crear una copia del objeto ilustración 
     this.formatoSeleccionados = this.formatos.filter(x => this.articuloAEditar.formatos.find(y => x.id == y.id) );   
     this.progreso = 0;
+    this.fotoSeleccionada = null;
+  }
+
+  /**
+  * Cancela la edición de una ilustración y revierte los cambios realizados.
+  */
+  cancelarEdicion(): void {
+    Object.assign(this.articuloAEditar, this.articuloAEditarOriginal); // Revertir los cambios
+    this.displayActivationDialog = false;
   }
 
   mostrarDetallesArticulo(articulo: Articulo): void {
