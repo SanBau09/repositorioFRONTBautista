@@ -5,6 +5,7 @@ import swal from 'sweetalert2';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Pais } from '../pais';
 import { AuthService } from '../auth.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-form-registro',
@@ -64,16 +65,28 @@ export class FormRegistroComponent implements OnInit  {
     });
   }
 
-  /**
+/**
    * Edita los datos del usuario utilizando el servicio UsuariosService.
+   * Verifica que todos los campos requeridos estén llenos y que el formulario sea válido.
    * Si la operación es exitosa, redirige al usuario a la página de la galería.
    * Si falla, muestra un mensaje de error y almacena los errores recibidos en this.errores.
+   * param usuarioForm Referencia al formulario NgForm que contiene los datos del usuario a editar
    */
-  editar(): void{
+  editar(usuarioForm: NgForm): void{
+    if (!this.usuario.nombre || !this.usuario.apellidos || !this.usuario.email || !this.usuario.username || !this.usuario.password || !this.usuario.telefono || !this.usuario.cp || !this.usuario.direccion || !this.usuario.provincia || !this.usuario.localidad || !this.usuario.pais) {
+      swal('Error', 'Todos los campos son requeridos', 'error');
+      return;
+    }
+
+    if (!usuarioForm.valid) {
+      swal('Error', 'Hay errores en el formulario, por favor revisa los campos', 'error');
+      return;
+    }
+
     this.usuariosService.editarUsuario(this.usuario).subscribe({
         next:
           json => {
-            this.router.navigate(['/galeria'])
+            this.router.navigate(['/galeria/ilustraciones'])
             swal('Usuario Actualizado', `${json.mensaje}: ${json.usuario.username}`, 'success')},
           error:
             err => {

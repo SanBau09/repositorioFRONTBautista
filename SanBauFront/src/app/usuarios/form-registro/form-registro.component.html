@@ -157,7 +157,7 @@
             <div class="form-group row">
                 <div class="col-sm-12 text-center mt-3">
                     <ng-container *ngIf="authService.hasRol('ROLE_USER'); else notUserRole">
-                        <button class="btn btn-primary" role="button" (click)="editar()">Editar</button>
+                        <button class="btn btn-editar" role="button" (click)="editar(usuarioForm)" [disabled]="usuarioForm.invalid">Editar</button>
                     </ng-container>
                     <ng-template #notUserRole>
                         <button class="btn btn-editar" role="button" (click)="create()">Registrar</button>
