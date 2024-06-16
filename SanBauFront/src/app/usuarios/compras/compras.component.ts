@@ -16,6 +16,13 @@ export class ComprasComponent  implements OnInit{
   totalPedidos: number;
   constructor(public usuariosService:UsuariosService, public authService:AuthService, public tiendaService: TiendaService){}
 
+    /**
+   * Método de inicialización del componente.
+   * 
+   * Este método se ejecuta cuando el componente se inicializa. Verifica el rol del usuario
+   * y carga las ventas o compras correspondientes. Si el usuario es un administrador,
+   * obtiene todas las ventas. Si el usuario es un usuario regular, obtiene las compras del usuario.
+   */
   ngOnInit(): void {
     if (this.authService.hasRol('ROLE_ADMIN')){
       this.tiendaService.getVentas().subscribe({

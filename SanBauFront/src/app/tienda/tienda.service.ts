@@ -23,37 +23,64 @@ export class TiendaService {
     this._listaCarrito = this.loadCarritoFromSessionStorage();
   }
 
-   private loadCarritoFromSessionStorage(): ItemCompra[] {
+  /**
+   * Carga el carrito de compras desde el almacenamiento de sesión.
+   * returns Arreglo de ItemCompra que representa el carrito de compras.
+   */
+  private loadCarritoFromSessionStorage(): ItemCompra[] {
     const storedCarrito = sessionStorage.getItem('listaCarrito');
     return storedCarrito ? JSON.parse(storedCarrito) as ItemCompra[] : [];
   }
 
+  /**
+   * Guarda el carrito de compras en el almacenamiento de sesión.
+   */
   private saveCarritoToSessionStorage(): void {
     sessionStorage.setItem('listaCarrito', JSON.stringify(this._listaCarrito));
   }
 
+   /**
+   * Obtiene la lista actual del carrito de compras.
+   * returns Arreglo de ItemCompra que representa el carrito de compras actual.
+   */
   public get listaCarrito(): ItemCompra[] {
     return this._listaCarrito;
   }
 
+   /**
+   * Agrega un artículo al carrito de compras.
+   * param itemCompra Objeto de tipo ItemCompra que se va a agregar al carrito.
+   */
   public agregarArticuloAlCarrito(itemCompra: ItemCompra): void {
     this._listaCarrito.push(itemCompra);
     this.saveCarritoToSessionStorage();
     this.carritoCambiado.next();
   }
 
+  /**
+   * Elimina un artículo del carrito de compras.
+   * param articuloId ID del artículo que se desea eliminar del carrito.
+   */
   public eliminarArticuloDelCarrito(articuloId: number): void {
     this._listaCarrito = this._listaCarrito.filter(item => item.articulo.id !== articuloId);
     this.saveCarritoToSessionStorage();
     this.carritoCambiado.next();
   }
-
+  
+  /**
+   * Vacía completamente el carrito de compras.
+   */
   public vaciarCarrito(): void {
     this._listaCarrito = [];
     sessionStorage.removeItem('listaCarrito');
     this.carritoCambiado.next();
   }
 
+   /**
+   * Crea una nueva venta.
+   * param venta Objeto de tipo Venta que representa la venta a crear.
+   * returns Observable que contiene el objeto Venta creado.
+   */
   createVenta(venta: Venta ) : Observable<Venta> {
 
     return this.http.post(this.urlEndPoint + "/venta", venta, {headers:this.agregarAuthorizationHeader()}).pipe(
@@ -75,6 +102,10 @@ export class TiendaService {
     );
   }
 
+  /**
+   * Obtiene todas las ventas.
+   * returns Observable que contiene un arreglo de objetos Venta.
+   */
   getVentas(): Observable<Venta[]>{
     return this.http.get<Venta[]>(this.urlEndPoint + '/ventas', {headers: this.agregarAuthorizationHeader()}).pipe(
       catchError(e=>{
@@ -85,6 +116,10 @@ export class TiendaService {
     );
   }
 
+  /**
+   * Agrega el token de autorización al encabezado HTTP si está disponible.
+   * returns Encabezados HTTP con el token de autorización, si está autenticado.
+   */
   private agregarAuthorizationHeader(){
     let token = this.authService.token;
 
@@ -94,6 +129,11 @@ export class TiendaService {
     return this.httpHeaders;
   }
 
+  /**
+   * Maneja los errores relacionados con la autorización.
+   * param e Error recibido en la respuesta HTTP.
+   * returns true si el error indica falta de autorización (401 o 403), false de lo contrario.
+   */
   private isNoAutorizado(e): boolean{
     if(e.status == 401){
       if(this.authService.isAuthenticated()){
@@ -112,6 +152,12 @@ export class TiendaService {
     return false;
   }
   
+  /**
+   * Crea un nuevo artículo junto con su imagen.
+   * param articulo Objeto de tipo Articulo que representa el artículo a crear.
+   * param archivo Archivo de imagen asociado al artículo.
+   * returns Observable que contiene el objeto Articulo creado.
+   */
   create(articulo: Articulo, archivo: File) : Observable<Articulo> {
 
     let formData = new FormData();
@@ -144,6 +190,11 @@ export class TiendaService {
     );
   }
 
+  /**
+   * Actualiza un artículo existente.
+   * param articulo Objeto de tipo Articulo que representa el artículo a actualizar.
+   * returns Observable que contiene la respuesta de la operación HTTP.
+   */
   editarArticulo(articulo: Articulo): Observable<any>{
     return this.http.put<any>(` ${this.urlEndPoint}/articulos/${articulo.id}`, articulo, {headers: this.agregarAuthorizationHeader()}).pipe(
       catchError(e=> {
@@ -162,6 +213,12 @@ export class TiendaService {
     )
   }
 
+  /**
+   * Sube una foto asociada a un artículo.
+   * param archivo Archivo de imagen que se va a subir.
+   * param id ID del artículo al que se asociará la imagen.
+   * returns Observable que contiene el progreso de la operación HTTP.
+   */
   subirFoto(archivo: File, id): Observable<HttpEvent<{}>>{
     let formData = new FormData();
     formData.append("archivo", archivo);
@@ -189,6 +246,11 @@ export class TiendaService {
      
   }
 
+  /**
+   * Elimina un artículo existente.
+   * param id ID del artículo que se desea eliminar.
+   * returns Observable que contiene el objeto Articulo eliminado.
+   */
   eliminarArticulo(id: number): Observable<Articulo>{
     return this.http.delete<Articulo>(` ${this.urlEndPoint}/articulos/${id}`, {headers: this.agregarAuthorizationHeader()}).pipe(
       catchError(e=> {
@@ -204,6 +266,10 @@ export class TiendaService {
     )
   }
 
+   /**
+   * Obtiene todos los artículos disponibles.
+   * returns Observable que contiene un arreglo de objetos Articulo.
+   */
   getArticulos(): Observable<any>{
     return this.http.get(this.urlEndPoint + "/articulos").pipe(
       tap( (response : any) =>{
@@ -219,6 +285,11 @@ export class TiendaService {
 
   }
   
+  /**
+   * Crea un nuevo formato asociado a un artículo.
+   * param formato Objeto de tipo Formato que representa el formato a crear.
+   * returns Observable que contiene el objeto Formato creado.
+   */
   crearFormato(formato: Formato): Observable<Formato>{
     return this.http.post(this.urlEndPoint + "/formatos", formato, {headers:this.agregarAuthorizationHeader()}).pipe(
       map( (response : any) => response.formato as Formato),
@@ -239,6 +310,10 @@ export class TiendaService {
     );
   }
 
+  /**
+   * Obtiene todos los formatos disponibles.
+   * returns Observable que contiene un arreglo de objetos Formato.
+   */
   getFormatos(): Observable<Formato[]>{
     return this.http.get<Formato[]>(this.urlEndPoint + '/formatos', {headers: this.agregarAuthorizationHeader()}).pipe(
       catchError(e=>{
@@ -249,6 +324,11 @@ export class TiendaService {
     );
   }
 
+  /**
+   * Elimina un formato existente.
+   * param id ID del formato que se desea eliminar.
+   * returns Observable que contiene el objeto Formato eliminado.
+   */
   eliminarFormato(id: number): Observable<Formato>{
     return this.http.delete<Formato>(` ${this.urlEndPoint}/formatos/${id}`, {headers: this.agregarAuthorizationHeader()}).pipe(
       catchError(e=> {

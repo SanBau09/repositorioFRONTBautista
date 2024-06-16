@@ -41,12 +41,19 @@ export class TiendaComponent implements OnInit {
 
   constructor(private galeriaService: GaleriaService, private tiendaService: TiendaService, public authService: AuthService, public router: Router){}
 
+  /**
+   * Llama a los métodos para obtener los artículos, categorías y formatos disponibles.
+   */
   ngOnInit(): void {
     this.obtenerArticulos();
     this.obtenerCategorias();
     this.obtenerFormatos();
   }
 
+   /**
+   * Obtiene todos los artículos disponibles desde el servicio TiendaService.
+   * Actualiza las variables `articulos` y `articulosFiltrados`.
+   */
   obtenerArticulos(): void {
     this.tiendaService.getArticulos().subscribe(
       (articulos: Articulo[]) => {
@@ -59,6 +66,10 @@ export class TiendaComponent implements OnInit {
     );
   }
 
+  /**
+   * Obtiene todas las categorías disponibles desde el servicio GaleriaService.
+   * Filtra las categorías para obtener solo aquellas que no son galería.
+  */
   obtenerCategorias(): void {
     this.galeriaService.getCategorias().subscribe(
       (categorias: Categoria[]) => {
@@ -70,6 +81,10 @@ export class TiendaComponent implements OnInit {
     );
   }
 
+  /**
+   * Obtiene todos los formatos disponibles desde el servicio TiendaService.
+   * Actualiza la variable `formatos`.
+  */
   obtenerFormatos(): void {
     this.tiendaService.getFormatos().subscribe(
       formatos => {
@@ -81,7 +96,11 @@ export class TiendaComponent implements OnInit {
     );
   }
 
-   crearFormato(): void {
+  /**
+   * Crea un nuevo formato utilizando el servicio TiendaService.
+   * Muestra mensajes de error o éxito utilizando la librería swal (SweetAlert2).
+  */
+  crearFormato(): void {
        
     if (!this.nuevoFormato || !this.nuevoFormato.tamanio) {
     swal('Error', 'Introduzca un formato', 'error');
@@ -105,6 +124,10 @@ export class TiendaComponent implements OnInit {
     }
   }
 
+  /**
+   * Elimina los formatos seleccionados para eliminar utilizando el servicio TiendaService.
+   * Actualiza la lista de formatos después de eliminar.
+  */
   eliminarFormatos(): void{
     if(this.formatosSeleccionadosABorrar){
       this.formatosSeleccionadosABorrar.forEach( formato => {
@@ -124,10 +147,19 @@ export class TiendaComponent implements OnInit {
     
   }  
 
+  /**
+   * Muestra el diálogo para la eliminación de formatos.
+  */
   mostrarPDialogFormato(): void{
     this.displayBorrarFormatoDialog = true; // Mostrar el diálogo
   }
 
+  /**
+   * Compara dos categorías para determinar si son iguales.
+   * param o1 Primera categoría a comparar.
+   * param o2 Segunda categoría a comparar.
+   * returns true si las categorías son iguales, false de lo contrario.
+  */
   compararCategoria(o1: Categoria, o2:Categoria): boolean{
     if(o1 === undefined && o2 === undefined){
       return true;
@@ -136,6 +168,10 @@ export class TiendaComponent implements OnInit {
     return o1 == null || o2 == null? false: o1.id == o2.id;
   }
 
+  /**
+   * Filtra los artículos por la categoría seleccionada.
+   * param categoriaId ID de la categoría por la cual se desea filtrar los artículos.
+   */
   filtrarPorCategoria(categoriaId: string): void {
     if (categoriaId === '') {
       this.articulosFiltrados= this.articulos;
@@ -144,6 +180,10 @@ export class TiendaComponent implements OnInit {
     }
   }
 
+  /**
+   * Edita un artículo utilizando el servicio TiendaService.
+   * Actualiza la lista de artículos después de editar.
+   */
   editarArticulo(): void{
     this.articuloAEditar.formatos = this.formatoSeleccionados;
     this.tiendaService.editarArticulo(this.articuloAEditar).subscribe({
@@ -160,6 +200,10 @@ export class TiendaComponent implements OnInit {
     });
   }
 
+   /**
+   * Selecciona una foto para subir.
+   * param event Evento que contiene la información del archivo seleccionado.
+   */
   seleccionarFoto(event){  //nos aseguramos que el archivo sea de tipo imagen
     this.fotoSeleccionada = event.target.files[0];
     this.progreso = 0;
@@ -172,6 +216,10 @@ export class TiendaComponent implements OnInit {
     }
   }
 
+    /**
+   * Sube la foto seleccionada utilizando el servicio TiendaService.
+   * Actualiza la foto del artículo después de subirla.
+   */
   subirFoto(){ //nos aseguramos que el archivo sea de tipo imagen
     if(!this.fotoSeleccionada){
       swal('Error Upload: ', 'Debe seleccionar una foto', 'error');
@@ -193,6 +241,12 @@ export class TiendaComponent implements OnInit {
     }
   }
 
+    /**
+   * Muestra el diálogo para editar un artículo.
+   * Guarda una copia profunda del artículo original y crea una copia del artículo a editar.
+   * Filtra los formatos seleccionados del artículo.
+   * param articulo El artículo a editar.
+   */
   mostrarPDialogEditarArticulo(articulo): void{
     this.displayActivationDialog = true; // Mostrar el diálogo
     this.articuloAEditarOriginal = { ...articulo, categorias: [...articulo.categorias], formatos: [...articulo.formatos] }; // Guardar el estado original con una copia profunda de las categorías
@@ -210,6 +264,10 @@ export class TiendaComponent implements OnInit {
     this.displayActivationDialog = false;
   }
 
+  /**
+   * Muestra los detalles de un artículo en un diálogo modal.
+   * param articulo El artículo del cual se mostrarán los detalles.
+  */
   mostrarDetallesArticulo(articulo: Articulo): void {
     this.articuloSeleccionado = articulo;
     this.formatoSeleccionado = new Formato();
@@ -217,6 +275,12 @@ export class TiendaComponent implements OnInit {
     this.displayDetallesDialog = true;
   }
 
+  /**
+   * Elimina un artículo utilizando el servicio TiendaService.
+   * Muestra un mensaje de confirmación antes de realizar la eliminación.
+   * Actualiza la lista de artículos después de eliminar.
+   * param articulo El artículo que se desea eliminar.
+  */
   eliminarArticulo(articulo: Articulo) : void {
     swal({
       title: "Estás seguro?",
@@ -243,6 +307,14 @@ export class TiendaComponent implements OnInit {
     });
   }
 
+  /**
+   * Añade un artículo al carrito de compras.
+   * Verifica si el usuario está autenticado antes de añadir el artículo.
+   * Muestra mensajes de éxito o error utilizando swal (SweetAlert2).
+   * param articuloSeleccionado El artículo seleccionado para añadir al carrito.
+   * param formatoSeleccionado El formato seleccionado del artículo.
+   * param cantidad La cantidad del artículo seleccionado.
+  */
   aniadirArticulo(articuloSeleccionado : Articulo, formatoSeleccionado : Formato, cantidad : number): void {
     if (this.authService.isAuthenticated()){
       if(articuloSeleccionado && formatoSeleccionado){

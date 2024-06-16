@@ -7,6 +7,10 @@ import { Categoria } from 'src/app/galeria/categoria';
 import { GaleriaService } from 'src/app/galeria/galeria.service';
 import { Formato } from '../formato';
 
+/**
+ * Componente Angular para la gestión de formulario de creación de artículos.
+ * Permite crear, gestionar y eliminar categorías y formatos asociados a los artículos.
+ */
 @Component({
   selector: 'app-form-articulo',
   templateUrl: './form-articulo.component.html',
@@ -35,6 +39,10 @@ export class FormArticuloComponent implements OnInit{
 
   }
 
+  /**
+   * Método que se ejecuta al inicializar el componente.
+   * Recupera las categorías y formatos disponibles.
+   */
   ngOnInit(){
     this.galeriaService.getCategorias().subscribe(categorias => this.categorias = categorias.filter(categoria => !categoria.esGaleria));  // Filtrar categorías);
    
@@ -48,6 +56,12 @@ export class FormArticuloComponent implements OnInit{
     );
   }
 
+    /**
+   * Compara dos objetos de tipo Categoria para determinar si son iguales.
+   * param o1 Primer objeto de tipo Categoria a comparar
+   * param o2 Segundo objeto de tipo Categoria a comparar
+   * returns true si los objetos son iguales, false en caso contrario
+   */
   compararCategoria(o1: Categoria, o2:Categoria): boolean{
     if(o1 === undefined && o2 === undefined){
       return true;
@@ -56,6 +70,10 @@ export class FormArticuloComponent implements OnInit{
     return o1 == null || o2 == null? false: o1.id == o2.id;
   }
 
+  /**
+   * Crea un nuevo artículo con la información ingresada y la foto seleccionada.
+   * Muestra mensajes de error si no se ha seleccionado una foto o si ocurre un error en la creación.
+   */
   create(): void{
 
     if(!this.fotoSeleccionada){
@@ -77,6 +95,10 @@ export class FormArticuloComponent implements OnInit{
     }
   }
 
+  /**
+   * Crea una nueva categoría con el nombre ingresado.
+   * Muestra un mensaje de error si la categoría ya existe o si ocurre un error en la creación.
+   */
   createCategoria(): void{
     if(this.categorias.find(x => x.nombre.toLocaleLowerCase() == this.nuevaCategoria.nombre.toLocaleLowerCase())){
       swal('Categoria Existente', `La categoría ${this.nuevaCategoria.nombre} ya existe!`, 'error');
@@ -97,7 +119,9 @@ export class FormArticuloComponent implements OnInit{
   }
 
   /**
-   * Elimina la categoría seleccionada si hay una categoría seleccionada.
+   * Elimina la categoría seleccionada.
+   * Muestra un mensaje de éxito si la categoría se elimina correctamente.
+   * Muestra un mensaje de error si no se ha seleccionado una categoría.
    */
   eliminarCategoria(): void {
     if(this.categoriaSeleccionada){
@@ -118,6 +142,10 @@ export class FormArticuloComponent implements OnInit{
     
   }
 
+  /**
+   * Crea un nuevo formato con el tamaño ingresado.
+   * Muestra un mensaje de error si el formato ya existe o si ocurre un error en la creación.
+   */
   crearFormato(): void {
        
     if (!this.nuevoFormato || !this.nuevoFormato.tamanio) {
@@ -142,6 +170,11 @@ export class FormArticuloComponent implements OnInit{
     }
   }
 
+   /**
+   * Elimina los formatos seleccionados para eliminar.
+   * Muestra un mensaje de éxito si los formatos se eliminan correctamente.
+   * Muestra un mensaje de error si no se ha seleccionado ningún formato.
+   */
   eliminarFormatos(): void{
     if(this.formatosSeleccionadosABorrar){
       this.formatosSeleccionadosABorrar.forEach( formato => {
@@ -161,15 +194,27 @@ export class FormArticuloComponent implements OnInit{
     
   }  
 
+  /**
+   * Muestra el diálogo modal para confirmar la eliminación de formatos.
+   */
   mostrarPDialogFormato(): void{
     this.displayBorrarFormatoDialog = true; // Mostrar el diálogo
   }
 
+  /**
+   * Muestra el diálogo modal para la creación de una nueva categoría.
+   * Inicializa la nueva categoría a crear.
+   */
   mostrarPDialogCategoria(): void{
     this.displayActivationDialog = true; // Mostrar el diálogo
     this.nuevaCategoria = new Categoria();
   }
 
+  /**
+   * Selecciona una foto para ser cargada como parte de la creación de un artículo.
+   * Verifica que el archivo seleccionado sea de tipo imagen y muestra un mensaje de error si no lo es.
+   * param event Evento del cambio de archivo que contiene la foto seleccionada
+   */
   seleccionarFoto(event){  //nos aseguramos que el archivo sea de tipo imagen
     this.fotoSeleccionada = event.target.files[0];
     this.progreso = 0;
